@@ -11,6 +11,7 @@ import { openChat, showAlert, showOpenUrlAlert } from '../../Actions/Client';
 import { getDecodedUrl, getHref, isTelegramLink, isUrlSafe } from '../../Utils/Url';
 import { openChatSelect } from '../../Actions/Message';
 import { isBotChat } from '../../Utils/Chat';
+import { openExternalLink } from '../../Utils/Common';
 import AppStore from '../../Stores/ApplicationStore';
 import LStore from '../../Stores/LocalizationStore';
 import TdLibController from '../../Controllers/TdLibController';
@@ -339,9 +340,7 @@ class SafeLink extends React.Component {
         } else {
             event && event.preventDefault();
 
-            const newWindow = window.open();
-            newWindow.opener = null;
-            newWindow.location = href;
+            openExternalLink(href);
         }
     };
 

@@ -8,6 +8,7 @@
 import { loadInstantViewContent } from '../Utils/File';
 import { setInstantViewContent } from './Client';
 import TdLibController from '../Controllers/TdLibController';
+import { openExternalLink } from '../Utils/Common';
 
 export function openMediaInstantView(instantView, block) {
     const url = urlCache.get(instantView);
@@ -44,8 +45,6 @@ export async function openInstantView(url) {
         loadInstantViewContent(result);
         setInstantViewContent({ instantView: result, url });
     } catch {
-        const newWindow = window.open();
-        newWindow.opener = null;
-        newWindow.location = url;
+        openExternalLink(url);
     }
 }

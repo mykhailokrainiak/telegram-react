@@ -30,6 +30,25 @@ export async function isWebpSupported() {
     return webpSupported = await promise;
 }
 
+/**
+ * Opens url in a new tab without giving it access to window.opener.
+ * window.open() returns null when pop-ups are blocked, so fall back to a target="_blank" link.
+ */
+export function openExternalLink(url) {
+    const newWindow = window.open();
+    if (newWindow) {
+        newWindow.opener = null;
+        newWindow.location = url;
+        return;
+    }
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.click();
+}
+
 export function isSafari() {
     return /(Safari|iPhone|iPad|iPod)/.test(navigator.userAgent)
         && !/Chrome/.test(navigator.userAgent)

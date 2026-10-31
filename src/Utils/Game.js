@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { openExternalLink } from './Common';
+
 export function openGameInBrowser(url, message) {
     let sharedPreferences = {};
     try {
@@ -42,7 +44,5 @@ export function openGameInBrowser(url, message) {
         }
     }
 
-    const newWindow = window.open();
-    newWindow.opener = null;
-    newWindow.location = url;
+    openExternalLink(url);
 }

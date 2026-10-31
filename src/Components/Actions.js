@@ -37,6 +37,7 @@ import SupergroupStore from '../Stores/SupergroupStore';
 import UserStore from '../Stores/UserStore';
 import TdLibController from '../Controllers/TdLibController';
 import CloseIcon from '../Assets/Icons/Close';
+import { openExternalLink } from '../Utils/Common';
 
 class Actions extends React.PureComponent {
     state = {
@@ -473,9 +474,7 @@ class Actions extends React.PureComponent {
         } else {
             event && event.preventDefault();
 
-            const newWindow = window.open();
-            newWindow.opener = null;
-            newWindow.location = url;
+            openExternalLink(url);
         }
     };
 
