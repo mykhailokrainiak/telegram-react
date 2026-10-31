@@ -15,11 +15,27 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import FireworksComponent from './FireworksControl';
 import PollOption from './PollOption';
 import UserTile from '../../Tile/UserTile';
-import { setPollAnswer } from '../../../Actions/Poll';
+import { addPollOption, cancelPollAnswer, setPollAnswer } from '../../../Actions/Poll';
+import { getFormattedText } from '../../../Utils/Message';
 import MessageStore from './../../../Stores/MessageStore';
 import TdLibController from './../../../Controllers/TdLibController';
 import './Poll.css';
 import PollResultsDialog from '../../Popup/PollResultsDialog';
+
+const VOTE_RESTRICTION_TEXT = {
+    pollVoteRestrictionReasonYetUnsent: 'You can vote once the message is sent',
+    pollVoteRestrictionReasonScheduled: 'You can vote once the message is sent',
+    pollVoteRestrictionReasonCountryRestricted: "Voting isn't available in your country",
+    pollVoteRestrictionReasonMembershipRequired: 'Join the chat to vote',
+    pollVoteRestrictionReasonOther: "You can't vote in this poll"
+};
+
+function getVoteRestrictionText(poll) {
+    const reason = poll && poll.vote_restriction_reason;
+    if (!reason || poll.is_closed) return null;
+
+    return VOTE_RESTRICTION_TEXT[reason['@type']] || null;
+}
 
 class Poll extends React.Component {
     constructor(props) {
@@ -153,6 +169,51 @@ class Poll extends React.Component {
         return correct_option_id === index;
     }
 
+    handleRetractVote = event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const { chatId, messageId } = this.props;
+        cancelPollAnswer(chatId, messageId);
+    };
+
+    handleShowAddOption = event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.setState({ addingOption: true, newOptionText: '' });
+    };
+
+    handleNewOptionChange = event => {
+        this.setState({ newOptionText: event.target.value });
+    };
+
+    handleNewOptionKeyDown = event => {
+        event.stopPropagation();
+
+        if (event.key === 'Enter') {
+            this.handleAddOption(event);
+        } else if (event.key === 'Escape') {
+            this.setState({ addingOption: false });
+        }
+    };
+
+    handleAddOption = async event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const { chatId, messageId } = this.props;
+        const text = (this.state.newOptionText || '').trim();
+        if (!text) return;
+
+        try {
+            await addPollOption(chatId, messageId, text);
+            this.setState({ addingOption: false, newOptionText: '', addOptionError: null });
+        } catch (error) {
+            this.setState({ addOptionError: (error && error.message) || 'Could not add the option' });
+        }
+    };
+
     handleOpenResults = event => {
         event.preventDefault();
         event.stopPropagation();
@@ -172,7 +233,7 @@ class Poll extends React.Component {
 
     render() {
         const { chatId, messageId, poll, t, meta } = this.props;
-        const { viewResultsPoll } = this.state;
+        const { viewResultsPoll, addingOption, newOptionText, addOptionError } = this.state;
         const { question, options, total_voter_count, type, is_closed, is_anonymous, recent_voter_user_ids } = poll;
 
         let subtitle = t('FinalResults');
@@ -192,8 +253,16 @@ class Poll extends React.Component {
         const message = MessageStore.get(chatId, messageId);
         if (!message) return null;
 
+        const { description, can_add_option } = message.content;
+        const restrictionText = getVoteRestrictionText(poll);
+        const hideResults = poll.can_see_results === false;
+        const order =
+            poll.option_order && poll.option_order.length === options.length ? poll.option_order : options.map((x, i) => i);
+
         const isQuiz = type && type['@type'] === 'pollTypeQuiz';
-        const canBeSelected = !is_closed && options.every(x => !x.is_chosen);
+        const canBeSelected = !is_closed && !restrictionText && options.every(x => !x.is_chosen);
+        const canRetractVote =
+            !is_closed && !isQuiz && poll.allows_revoting !== false && options.some(x => x.is_chosen);
         const isSelected = !is_closed && options.some(x => x.is_chosen);
         const maxVoterCount = Math.max(...options.map(x => x.voter_count));
         const showViewResults = this.viewResults(poll);
@@ -209,25 +278,61 @@ class Poll extends React.Component {
                 {isQuiz && <FireworksComponent ref={this.fireworksRef} />}
                 <div className='poll-question'>
                     <div className='poll-question-title'>{question}</div>
+                    {description && description.text && (
+                        <div className='poll-question-description'>{getFormattedText(description, t)}</div>
+                    )}
                     <div className='poll-question-subtitle'>
                         <span style={{ marginRight: 6 }}>{subtitle}</span>
                         {recentVoters}
                     </div>
                 </div>
                 <div className='poll-options'>
-                    {options.map((x, index) => (
+                    {order.map(index => (
                         <PollOption
                             key={index}
                             type={this.getOptionType(index, poll)}
                             isCorrect={this.getOptionIsCorrect(index, poll)}
-                            option={x}
+                            option={options[index]}
                             canBeSelected={canBeSelected}
                             closed={is_closed}
+                            hideResults={hideResults}
                             maxVoterCount={maxVoterCount}
                             onVote={() => this.handleVote(index)}
                         />
                     ))}
                 </div>
+                {can_add_option && !is_closed && (
+                    <div className='poll-add-option' onClick={e => e.stopPropagation()}>
+                        {addingOption ? (
+                            <>
+                                <input
+                                    autoFocus
+                                    className='poll-add-option-input'
+                                    placeholder='New option'
+                                    maxLength={100}
+                                    value={newOptionText}
+                                    onChange={this.handleNewOptionChange}
+                                    onKeyDown={this.handleNewOptionKeyDown}
+                                />
+                                <button type='button' className='poll-link-button' onClick={this.handleAddOption}>
+                                    Add
+                                </button>
+                            </>
+                        ) : (
+                            <button type='button' className='poll-link-button' onClick={this.handleShowAddOption}>
+                                + Add option
+                            </button>
+                        )}
+                        {addOptionError && <div className='poll-note'>{addOptionError}</div>}
+                    </div>
+                )}
+                {restrictionText && <div className='poll-note'>{restrictionText}</div>}
+                {hideResults && !is_closed && <div className='poll-note'>Results are shown when the poll closes</div>}
+                {canRetractVote && (
+                    <button type='button' className='poll-link-button poll-retract' onClick={this.handleRetractVote}>
+                        Retract vote
+                    </button>
+                )}
                 {showButton ? (
                     <Button
                         fullWidth

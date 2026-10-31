@@ -9,6 +9,7 @@ import { canSendMessages, getChatUserId, isGroupChat, isPrivateChat } from '../U
 import AppStore from '../Stores/ApplicationStore';
 import LStore from '../Stores/LocalizationStore';
 import TdLibController from '../Controllers/TdLibController';
+import { loadMessageProperties } from './Message';
 
 export function showLeaveVoiceChatAlert(params) {
     TdLibController.clientUpdate({
@@ -93,7 +94,10 @@ export function editMessage(chatId, messageId) {
     });
 }
 
-export function deleteMessages(chatId, messageIds) {
+export async function deleteMessages(chatId, messageIds) {
+    // The delete dialog offers "delete for everyone" based on these permissions.
+    await loadMessageProperties(chatId, messageIds);
+
     TdLibController.clientUpdate({
         '@type': 'clientUpdateDeleteMessages',
         chatId,
@@ -101,11 +105,13 @@ export function deleteMessages(chatId, messageIds) {
     });
 }
 
-export function replyMessage(chatId, messageId) {
+// quote: optional { text, position } of the selected fragment of the replied message.
+export function replyMessage(chatId, messageId, quote = null) {
     TdLibController.clientUpdate({
         '@type': 'clientUpdateReply',
         chatId,
-        messageId
+        messageId,
+        quote
     });
 }
 
@@ -216,7 +222,12 @@ export function highlightMessage(chatId, messageId) {
     });
 }
 
-export function selectMessage(chatId, messageId, selected) {
+export async function selectMessage(chatId, messageId, selected) {
+    if (selected) {
+        // The header's Delete/Forward buttons read the selected messages' permissions.
+        await loadMessageProperties(chatId, [messageId]);
+    }
+
     TdLibController.clientUpdate({
         '@type': 'clientUpdateMessageSelected',
         chatId,

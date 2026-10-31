@@ -16,6 +16,7 @@ import { albumHistoryEquals } from '../../Utils/Common';
 import { getDate, getDateHint, getViews, isCallMessage } from '../../Utils/Message';
 import MessageStore from '../../Stores/MessageStore';
 import './Meta.css';
+import MessageEffect from './MessageEffect';
 
 class Meta extends React.Component {
 
@@ -129,6 +130,7 @@ class Meta extends React.Component {
                         <span>&nbsp;</span>
                     </>
                 )}
+                <MessageEffect chatId={chatId} messageId={messageId} />
                 {editDate > 0 && <span>{t('EditedMessage')}&nbsp;</span>}
                 <a onClick={onDateClick}>
                     <span title={dateHintStr}>{dateStr}</span>

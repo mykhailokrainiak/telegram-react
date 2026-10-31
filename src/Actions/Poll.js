@@ -25,6 +25,18 @@ export function cancelPollAnswer(chatId, messageId) {
     });
 }
 
+export function addPollOption(chatId, messageId, text) {
+    return TdLibController.send({
+        '@type': 'addPollOption',
+        chat_id: chatId,
+        message_id: messageId,
+        option: {
+            '@type': 'inputPollOption',
+            text: { '@type': 'formattedText', text, entities: [] }
+        }
+    });
+}
+
 export function stopPoll(chatId, messageId) {
     TdLibController.send({
         '@type': 'stopPoll',

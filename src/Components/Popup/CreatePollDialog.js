@@ -59,6 +59,8 @@ class CreatePollDialog extends React.Component {
     componentDidMount() {
         PollStore.on('clientUpdatePollChooseOption', this.handleClientUpdatePoll);
         PollStore.on('clientUpdatePollChangeAnonymous', this.handleClientUpdatePoll);
+        PollStore.on('clientUpdatePollChangeAllowRevoting', this.handleClientUpdatePoll);
+        PollStore.on('clientUpdatePollChangeAllowAddingOptions', this.handleClientUpdatePoll);
         PollStore.on('clientUpdatePollChangeAllowMultipleAnswers', this.handleClientUpdatePoll);
         PollStore.on('clientUpdatePollChangeType', this.handleClientUpdatePoll);
         PollStore.on('clientUpdateDeletePoll', this.handleClientUpdatePoll);
@@ -72,6 +74,8 @@ class CreatePollDialog extends React.Component {
     componentWillUnmount() {
         PollStore.off('clientUpdatePollChooseOption', this.handleClientUpdatePoll);
         PollStore.off('clientUpdatePollChangeAnonymous', this.handleClientUpdatePoll);
+        PollStore.off('clientUpdatePollChangeAllowRevoting', this.handleClientUpdatePoll);
+        PollStore.off('clientUpdatePollChangeAllowAddingOptions', this.handleClientUpdatePoll);
         PollStore.off('clientUpdatePollChangeAllowMultipleAnswers', this.handleClientUpdatePoll);
         PollStore.off('clientUpdatePollChangeType', this.handleClientUpdatePoll);
         PollStore.off('clientUpdateDeletePoll', this.handleClientUpdatePoll);
@@ -405,6 +409,18 @@ class CreatePollDialog extends React.Component {
         });
     };
 
+    handleChangeAllowRevoting = () => {
+        TdLibController.clientUpdate({
+            '@type': 'clientUpdatePollChangeAllowRevoting'
+        });
+    };
+
+    handleChangeAllowAddingOptions = () => {
+        TdLibController.clientUpdate({
+            '@type': 'clientUpdatePollChangeAllowAddingOptions'
+        });
+    };
+
     handleChangeType = () => {
         TdLibController.clientUpdate({
             '@type': 'clientUpdatePollChangeType'
@@ -548,6 +564,28 @@ class CreatePollDialog extends React.Component {
                                     label={t('PollMultiple')}
                                 />
                             </div>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        color='primary'
+                                        disabled={quizPoll}
+                                        checked={!quizPoll && Boolean(poll.allows_revoting)}
+                                        onChange={this.handleChangeAllowRevoting}
+                                    />
+                                }
+                                label={t('PollAllowRevoting', 'Allow changing votes')}
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        color='primary'
+                                        disabled={quizPoll}
+                                        checked={!quizPoll && Boolean(poll.allow_adding_options)}
+                                        onChange={this.handleChangeAllowAddingOptions}
+                                    />
+                                }
+                                label={t('PollAllowAddingOptions', 'Allow adding options')}
+                            />
                             <FormControlLabel
                                 control={
                                     <Checkbox color='primary' checked={quizPoll} onChange={this.handleChangeType} />

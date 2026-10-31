@@ -15,6 +15,14 @@ import { closePinned, openChat } from '../../Actions/Client';
 import MessageStore from '../../Stores/MessageStore';
 import './Reply.css';
 
+// Accepts TDLib's textQuote ({ text: formattedText }) or the input box's { text: string }.
+function getQuoteText(quote) {
+    if (!quote) return null;
+
+    const text = typeof quote.text === 'string' ? quote.text : quote.text && quote.text.text;
+    return text || null;
+}
+
 class Reply extends React.Component {
     componentDidMount() {
         MessageStore.on('getMessageResult', this.onGetMessageResult);
@@ -53,7 +61,7 @@ class Reply extends React.Component {
     };
 
     render() {
-        const { t, chatId, messageId } = this.props;
+        const { t, chatId, messageId, quote } = this.props;
         let { title } = this.props;
 
         const message = MessageStore.get(chatId, messageId);
@@ -66,6 +74,11 @@ class Reply extends React.Component {
         if (isDeletedMessage(message)) {
             title = null;
             content = t('DeletedMessage');
+        }
+
+        const quoteText = getQuoteText(quote);
+        if (quoteText) {
+            content = quoteText;
         }
 
         return (
@@ -82,7 +95,9 @@ class Reply extends React.Component {
                     )}
                     <div className='reply-content'>
                         {title && <div className='reply-content-title'>{title}</div>}
-                        <div className={classNames('reply-content-subtitle')}>{content}</div>
+                        <div className={classNames('reply-content-subtitle', { 'reply-content-quote': quoteText })}>
+                            {content}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,6 +109,7 @@ Reply.propTypes = {
     chatId: PropTypes.number.isRequired,
     messageId: PropTypes.number.isRequired,
     title: PropTypes.string,
+    quote: PropTypes.object,
     onClick: PropTypes.func
 };
 

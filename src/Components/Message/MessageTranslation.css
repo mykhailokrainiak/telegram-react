@@ -1,0 +1,73 @@
+.message-translation {
+    margin: 4px 8px 2px;
+    padding: 4px 8px;
+    border-left: 2px solid var(--color-accent-main);
+    border-radius: 2px;
+    font-size: 15px;
+    background: var(--color-accent-main44);
+}
+
+/* The time and views sit in the bubble's bottom-right corner; keep them clear of the translation
+   unless reaction chips (which leave room for them) come next. */
+.message-translation {
+    margin-bottom: 22px;
+}
+
+.message-translation:has(+ .reactions) {
+    margin-bottom: 2px;
+}
+
+.message-translation-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-accent-main);
+}
+
+.message-translation-header a {
+    font-weight: normal;
+    color: inherit;
+    cursor: pointer;
+}
+
+.message-translation-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.message-translation-status {
+    opacity: 0.7;
+}
+
+/* Voice and video message transcription. */
+.speech-recognition-wrapper {
+    /* Keeps the text clear of the time in the bubble's bottom-right corner. */
+    padding-bottom: 18px;
+}
+
+.speech-recognition {
+    margin: 2px 0 0;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.speech-recognition-button {
+    padding: 1px 8px;
+    border: none;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--color-accent-main);
+    background: var(--color-accent-main44);
+}
+
+.speech-recognition-status {
+    font-size: 13px;
+    opacity: 0.7;
+}

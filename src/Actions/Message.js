@@ -6,8 +6,87 @@
  */
 
 import AppStore from '../Stores/ApplicationStore';
+import MessageStore from '../Stores/MessageStore';
 import { clearOpenChatOptions } from './Client';
+import i18n from 'i18next';
 import TdLibController from '../Controllers/TdLibController';
+
+/**
+ * TDLib no longer sends can_be_edited, can_be_deleted_* etc. with each message; they come from
+ * getMessageProperties. Copy them onto the stored messages so the existing can_be_* checks are exact.
+ */
+export async function loadMessageProperties(chatId, messageIds) {
+    await Promise.all(
+        messageIds.map(async messageId => {
+            const message = MessageStore.get(chatId, messageId);
+            if (!message || messageId <= 0) return;
+
+            try {
+                const properties = await TdLibController.send({
+                    '@type': 'getMessageProperties',
+                    chat_id: chatId,
+                    message_id: messageId
+                });
+                delete properties['@type'];
+                delete properties['@extra'];
+                delete properties['@client_id'];
+                Object.assign(message, properties, { properties_loaded: true });
+            } catch (error) {
+                console.error('[message] getMessageProperties failed', chatId, messageId, error);
+            }
+        })
+    );
+}
+
+// Translations shown under messages: key `${chatId}_${messageId}` -> { loading, text, error }.
+const translations = new Map();
+
+export function getMessageTranslation(chatId, messageId) {
+    return translations.get(`${chatId}_${messageId}`) || null;
+}
+
+function setMessageTranslation(chatId, messageId, translation) {
+    const key = `${chatId}_${messageId}`;
+    if (translation) {
+        translations.set(key, translation);
+    } else {
+        translations.delete(key);
+    }
+
+    MessageStore.emit('clientUpdateMessageTranslation', { chatId, messageId });
+}
+
+export function getTranslationLanguage() {
+    const language = i18n.language || navigator.language || 'en';
+
+    return language.split('-')[0];
+}
+
+export async function translateMessage(chatId, messageId) {
+    setMessageTranslation(chatId, messageId, { loading: true });
+
+    try {
+        const text = await TdLibController.send({
+            '@type': 'translateMessageText',
+            chat_id: chatId,
+            message_id: messageId,
+            to_language_code: getTranslationLanguage(),
+            tone: ''
+        });
+        setMessageTranslation(chatId, messageId, { text });
+    } catch (error) {
+        setMessageTranslation(chatId, messageId, { error: (error && error.message) || 'Translation failed' });
+    }
+}
+
+export function hideMessageTranslation(chatId, messageId) {
+    setMessageTranslation(chatId, messageId, null);
+}
+
+// Voice/video message transcription; the result arrives in the content's speech_recognition_result.
+export function recognizeSpeech(chatId, messageId) {
+    return TdLibController.send({ '@type': 'recognizeSpeech', chat_id: chatId, message_id: messageId });
+}
 
 export async function sendBotStartMessage(chatId, botUserId, parameter) {
     clearOpenChatOptions();

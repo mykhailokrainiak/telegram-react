@@ -14,7 +14,17 @@ import CheckIcon from '../../../Assets/Icons/Check';
 import CloseIcon from '../../../Assets/Icons/Close';
 import PollRadio from './PollRadio';
 import PollPercentage from './PollPercentage';
+import { getUserShortName } from '../../../Utils/User';
+import ChatStore from '../../../Stores/ChatStore';
 import './PollOption.css';
+
+function getOptionAuthorName(author, t) {
+    if (!author) return null;
+    if (author['@type'] === 'messageSenderUser') return getUserShortName(author.user_id, t);
+
+    const chat = ChatStore.get(author.chat_id);
+    return chat ? chat.title : null;
+}
 
 class PollOption extends React.Component {
     getTitleString = (count, t = key => key) => {
@@ -37,10 +47,11 @@ class PollOption extends React.Component {
     };
 
     render() {
-        const { option, onChange, canBeSelected, closed, maxVoterCount, t, type, isCorrect } = this.props;
+        const { option, onChange, canBeSelected, closed, hideResults, maxVoterCount, t, type, isCorrect } = this.props;
         if (!option) return null;
 
-        const { text, voter_count, vote_percentage, is_chosen, isMultiChoosen, is_being_chosen } = option;
+        const { text, voter_count, vote_percentage, is_chosen, isMultiChoosen, is_being_chosen, author } = option;
+        const authorName = getOptionAuthorName(author, t);
 
         let value = 1.5;
         if (voter_count) {
@@ -54,8 +65,8 @@ class PollOption extends React.Component {
                         'poll-option-wrapper',
                         canBeSelected ? 'poll-option-unselected' : 'poll-option-selected'
                     )}>
-                    <div className='poll-option-text-wrapper' title={this.getTitleString(voter_count, t)}>
-                        <PollPercentage value={vote_percentage} chosen={is_chosen} closed={closed} />
+                    <div className='poll-option-text-wrapper' title={hideResults ? null : this.getTitleString(voter_count, t)}>
+                        {!hideResults && <PollPercentage value={vote_percentage} chosen={is_chosen} closed={closed} />}
                         <PollRadio
                             hidden={!canBeSelected}
                             chosen={is_chosen || isMultiChoosen}
@@ -76,7 +87,10 @@ class PollOption extends React.Component {
                                 )}
                             </div>
                         )}
-                        <div className='poll-option-text'>{text}</div>
+                        <div className='poll-option-text'>
+                            {text}
+                            {authorName && <div className='poll-option-author'>added by {authorName}</div>}
+                        </div>
                     </div>
                 </div>
                 <LinearProgress
@@ -90,7 +104,7 @@ class PollOption extends React.Component {
                     }}
                     color='primary'
                     variant='determinate'
-                    value={canBeSelected ? 0 : Math.max(1.5, value)}
+                    value={canBeSelected || hideResults ? 0 : Math.max(1.5, value)}
                 />
             </div>
         );
@@ -103,6 +117,7 @@ PollOption.propTypes = {
     onVote: PropTypes.func.isRequired,
     canBeSelected: PropTypes.bool,
     closed: PropTypes.bool,
+    hideResults: PropTypes.bool,
     maxVoterCount: PropTypes.number
 };
 

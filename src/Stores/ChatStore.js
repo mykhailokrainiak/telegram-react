@@ -298,6 +298,18 @@ class ChatStore extends EventEmitter {
                 this.emitFastUpdate(update);
                 break;
             }
+            case 'updateChatUnreadReactionCount':
+            case 'updateMessageUnreadReactions': {
+                const { chat_id, unread_reaction_count } = update;
+
+                const chat = this.get(chat_id);
+                if (chat) {
+                    this.assign(chat, { unread_reaction_count });
+                }
+
+                this.emitFastUpdate(update);
+                break;
+            }
             case 'updateChatUnreadMentionCount': {
                 const { chat_id, unread_mention_count } = update;
 

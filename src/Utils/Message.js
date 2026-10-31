@@ -31,6 +31,7 @@ import MessageStore from '../Stores/MessageStore';
 import PlayerStore from '../Stores/PlayerStore';
 import UserStore from '../Stores/UserStore';
 import TdLibController from '../Controllers/TdLibController';
+import { TextSpoiler } from '../Components/Message/Spoiler';
 
 export function isCallMessage(chatId, messageId) {
     const message = MessageStore.get(chatId, messageId);
@@ -427,6 +428,20 @@ function getFormattedText(formattedText, t = k => k, options = { }) {
                     result.push(<u key={entityKey}>{entityText}</u>);
                     break;
                 }
+                case 'textEntityTypeSpoiler': {
+                    result.push(<TextSpoiler key={entityKey}>{entityText}</TextSpoiler>);
+                    break;
+                }
+                case 'textEntityTypeBlockQuote':
+                case 'textEntityTypeExpandableBlockQuote': {
+                    result.push(
+                        <blockquote key={entityKey} className='message-blockquote'>
+                            {entityText}
+                        </blockquote>
+                    );
+                    deleteLineBreakAfterPre = true;
+                    break;
+                }
                 default:
                     result.push(entityText);
                     break;
@@ -751,6 +766,12 @@ function getContent(message, t = key => key) {
             const { poll } = content;
 
             return '📊 ' + (poll.question || t('Poll')) + caption;
+        }
+        case 'messageChecklist': {
+            const { list } = content;
+            const title = list && list.title && list.title.text;
+
+            return '☑️ ' + (title || 'Checklist');
         }
         case 'messagePinMessage': {
             return getServiceMessageContent(message);
@@ -2166,6 +2187,11 @@ export function getNodes(text, entities, t = k => k) {
                     nodes.push(node);
                     break;
                 }
+                case 'textEntityTypeSpoiler': {
+                    const node = document.createTextNode('||' + text.substr(x.offset, x.length) + '||');
+                    nodes.push(node);
+                    break;
+                }
                 case 'textEntityTypeStrikethrough': {
                     const node = document.createElement('strike');
                     node.innerText = text.substr(x.offset, x.length);
@@ -2680,7 +2706,8 @@ export function getSimpleMarkupEntities(text, entities) {
     const entityTypes = {
         '*': 'textEntityTypeBold',
         '_': 'textEntityTypeItalic',
-        '~': 'textEntityTypeStrikethrough'
+        '~': 'textEntityTypeStrikethrough',
+        '|': 'textEntityTypeSpoiler'
     };
 
     let index = -1;     // first index of end tag
@@ -2794,6 +2821,7 @@ export function canMessageBeUnvoted(chatId, messageId) {
     if (!type) return false;
     if (type['@type'] !== 'pollTypeRegular') return false;
     if (is_closed) return false;
+    if (poll.allows_revoting === false) return false;
 
     return options.some(x => x.is_chosen || x.is_being_chosen);
 }

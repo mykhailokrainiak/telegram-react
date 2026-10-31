@@ -97,6 +97,17 @@ class MessageStore extends EventEmitter {
                 this.emit('updateMessageIsPinned', update);
                 break;
             }
+            case 'updateMessageUnreadReactions': {
+                const { chat_id, message_id, unread_reactions } = update;
+
+                const message = this.get(chat_id, message_id);
+                if (message) {
+                    message.unread_reactions = unread_reactions;
+                }
+
+                this.emit('updateMessageUnreadReactions', update);
+                break;
+            }
             case 'updateMessageInteractionInfo': {
                 const { chat_id, message_id, interaction_info } = update;
 

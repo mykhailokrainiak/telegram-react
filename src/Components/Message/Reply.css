@@ -81,3 +81,15 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.reply-content-quote {
+    font-style: italic;
+}
+
+.reply-content-quote::before {
+    content: '\201C';
+    margin-right: 2px;
+    font-style: normal;
+    font-weight: 600;
+    opacity: 0.7;
+}

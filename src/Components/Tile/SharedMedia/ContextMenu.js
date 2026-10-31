@@ -17,10 +17,18 @@ import ChatBubbleOutlineOutlinedIcon from '@material-ui/icons/ChatBubbleOutlineO
 import DeleteIcon from '../../../Assets/Icons/Delete';
 import ShareIcon from '../../../Assets/Icons/Share';
 import { deleteMessages, forwardMessages, openChat } from '../../../Actions/Client';
+import { loadMessageProperties } from '../../../Actions/Message';
 import MessageStore from '../../../Stores/MessageStore';
 import './ContextMenu.css';
 
 class ContextMenu extends React.Component {
+    componentDidUpdate(prevProps) {
+        const { chatId, messageId, open } = this.props;
+        if (open && !prevProps.open) {
+            loadMessageProperties(chatId, [messageId]).then(() => this.forceUpdate());
+        }
+    }
+
     handleOpenMessage = event => {
         const { chatId, messageId, onClose } = this.props;
 

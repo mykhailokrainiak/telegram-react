@@ -18,6 +18,7 @@ import { getServiceMessageContent } from '../../Utils/ServiceMessage';
 import MessageStore from '../../Stores/MessageStore';
 import './ServiceMessage.css';
 import MessageMenu from './MessageMenu';
+import { loadMessageProperties } from '../../Actions/Message';
 
 const chatPhotoStyle = {
     width: 96,
@@ -136,6 +137,9 @@ class ServiceMessage extends React.Component {
             const top = event.clientY;
             const copyLink =
                 event.target && event.target.tagName === 'A' && event.target.href ? event.target.href : null;
+
+            const { chatId, messageId } = this.props;
+            await loadMessageProperties(chatId, [messageId]);
 
             this.setState({
                 contextMenu: true,

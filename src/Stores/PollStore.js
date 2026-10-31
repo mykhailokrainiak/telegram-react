@@ -56,7 +56,9 @@ class PollStore extends EventEmitter {
                     id: Date.now(),
                     question: '',
                     options: [],
-                    is_anonymous: true
+                    is_anonymous: true,
+                    allows_revoting: true,
+                    allow_adding_options: false
                 });
 
                 this.emit('clientUpdateNewPoll', update);
@@ -69,6 +71,18 @@ class PollStore extends EventEmitter {
                 this.assign(this.poll, { is_anonymous: !isAnonymous });
 
                 this.emit('clientUpdatePollChangeAnonymous', update);
+                break;
+            }
+            case 'clientUpdatePollChangeAllowRevoting': {
+                this.assign(this.poll, { allows_revoting: !this.poll.allows_revoting });
+
+                this.emit('clientUpdatePollChangeAllowRevoting', update);
+                break;
+            }
+            case 'clientUpdatePollChangeAllowAddingOptions': {
+                this.assign(this.poll, { allow_adding_options: !this.poll.allow_adding_options });
+
+                this.emit('clientUpdatePollChangeAllowAddingOptions', update);
                 break;
             }
             case 'clientUpdatePollChangeAllowMultipleAnswers': {
@@ -177,7 +191,7 @@ class PollStore extends EventEmitter {
     getInputMessagePoll() {
         if (!this.poll) return null;
         if (!isValidPoll(this.poll)) return null;
-        const { question, options, type, is_anonymous } = this.poll;
+        const { question, options, type, is_anonymous, allows_revoting, allow_adding_options } = this.poll;
 
         if (type['@type'] === 'pollTypeQuiz') {
             type.correct_option_id = options.findIndex(x => x.is_chosen);
@@ -192,6 +206,9 @@ class PollStore extends EventEmitter {
             question,
             options: options.filter(x => Boolean(x.text)).map(x => x.text),
             is_anonymous,
+            // Quiz answers are final; regular polls follow the dialog's settings.
+            allows_revoting: type['@type'] === 'pollTypeQuiz' ? false : Boolean(allows_revoting),
+            allow_adding_options: type['@type'] === 'pollTypeQuiz' ? false : Boolean(allow_adding_options),
             type,
             is_closed: false
         };

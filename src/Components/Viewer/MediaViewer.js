@@ -29,6 +29,7 @@ import MediaViewerFooterText from './MediaViewerFooterText';
 import MediaViewerFooterButton from './MediaViewerFooterButton';
 import MediaViewerDownloadButton from './MediaViewerDownloadButton';
 import { forwardMessages, setMediaViewerContent } from '../../Actions/Client';
+import { loadMessageProperties } from '../../Actions/Message';
 import {
     cancelPreloadMediaViewerContent,
     getMediaFile,
@@ -126,6 +127,7 @@ class MediaViewer extends React.Component {
 
     componentDidMount() {
         this.loadHistory();
+        this.loadCurrentMessageProperties(this.state.currentMessageId);
 
         KeyboardManager.add(this.keyboardHandler);
         MessageStore.on('updateDeleteMessages', this.onUpdateDeleteMessages);
@@ -636,9 +638,18 @@ class MediaViewer extends React.Component {
         });
     };
 
+    // Delete/forward buttons read the message permissions, which TDLib returns on request.
+    loadCurrentMessageProperties = async messageId => {
+        const { chatId } = this.props;
+        await loadMessageProperties(chatId, [messageId]);
+        if (this.state.currentMessageId === messageId) this.forceUpdate();
+    };
+
     loadMedia = (index, callback) => {
         if (index < 0) return false;
         if (index >= this.history.length) return false;
+
+        this.loadCurrentMessageProperties(this.history[index].id);
 
         this.setState(
             {

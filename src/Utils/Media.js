@@ -28,6 +28,10 @@ import MessageStore from '../Stores/MessageStore';
 import { getSrc } from './File';
 import classNames from 'classnames';
 import Invoice from '../Components/Message/Media/Invoice';
+import ViewOnceMedia from '../Components/Message/Media/ViewOnceMedia';
+import { MediaSpoiler } from '../Components/Message/Spoiler';
+import SpeechRecognition from '../Components/Message/Media/SpeechRecognition';
+import Checklist from '../Components/Message/Media/Checklist';
 
 const waveformCache = new Map();
 
@@ -577,19 +581,25 @@ export function getMedia(message, openMedia, options = {}) {
     const { chat_id, id, content } = message;
     if (!content) return null;
 
+    if (content.is_secret && (content['@type'] === 'messagePhoto' || content['@type'] === 'messageVideo')) {
+        return <ViewOnceMedia chatId={chat_id} messageId={id} />;
+    }
+
     switch (content['@type']) {
         case 'messageAnimation':
             return (
-                <Animation
-                    type='message'
-                    title={hasTitle}
-                    caption={hasCaption}
-                    chatId={chat_id}
-                    messageId={id}
-                    animation={content.animation}
-                    openMedia={openMedia}
-                    stretch={true}
-                />
+                <MediaSpoiler enabled={Boolean(content.has_spoiler)}>
+                    <Animation
+                        type='message'
+                        title={hasTitle}
+                        caption={hasCaption}
+                        chatId={chat_id}
+                        messageId={id}
+                        animation={content.animation}
+                        openMedia={openMedia}
+                        stretch={true}
+                    />
+                </MediaSpoiler>
             );
         case 'messageAudio':
             return (
@@ -679,19 +689,23 @@ export function getMedia(message, openMedia, options = {}) {
             );
         case 'messagePhoto':
             return (
-                <Photo
-                    type='message'
-                    title={hasTitle}
-                    caption={hasCaption}
-                    chatId={chat_id}
-                    messageId={id}
-                    photo={content.photo}
-                    openMedia={openMedia}
-                    stretch={true}
-                />
+                <MediaSpoiler enabled={Boolean(content.has_spoiler)}>
+                    <Photo
+                        type='message'
+                        title={hasTitle}
+                        caption={hasCaption}
+                        chatId={chat_id}
+                        messageId={id}
+                        photo={content.photo}
+                        openMedia={openMedia}
+                        stretch={true}
+                    />
+                </MediaSpoiler>
             );
         case 'messagePoll':
             return <Poll chatId={chat_id} messageId={id} poll={content.poll} openMedia={openMedia} meta={inlineMeta} />;
+        case 'messageChecklist':
+            return <Checklist chatId={chat_id} messageId={id} checklist={content.list} meta={inlineMeta} />;
         case 'messageSticker':
             return (
                 <Sticker
@@ -720,42 +734,50 @@ export function getMedia(message, openMedia, options = {}) {
             );
         case 'messageVideo':
             return (
-                <Video
-                    type='message'
-                    title={hasTitle}
-                    caption={hasCaption}
-                    chatId={chat_id}
-                    messageId={id}
-                    video={content.video}
-                    openMedia={openMedia}
-                    stretch={true}
-                />
+                <MediaSpoiler enabled={Boolean(content.has_spoiler)}>
+                    <Video
+                        type='message'
+                        title={hasTitle}
+                        caption={hasCaption}
+                        chatId={chat_id}
+                        messageId={id}
+                        video={content.video}
+                        openMedia={openMedia}
+                        stretch={true}
+                    />
+                </MediaSpoiler>
             );
         case 'messageVideoNote':
             return (
-                <VideoNote
-                    type='message'
-                    title={hasTitle}
-                    caption={hasCaption}
-                    chatId={chat_id}
-                    messageId={id}
-                    videoNote={content.video_note}
-                    openMedia={openMedia}
-                    meta={meta}
-                />
+                <>
+                    <VideoNote
+                        type='message'
+                        title={hasTitle}
+                        caption={hasCaption}
+                        chatId={chat_id}
+                        messageId={id}
+                        videoNote={content.video_note}
+                        openMedia={openMedia}
+                        meta={meta}
+                    />
+                    <SpeechRecognition chatId={chat_id} messageId={id} />
+                </>
             );
         case 'messageVoiceNote':
             return (
-                <VoiceNote
-                    type='message'
-                    title={hasTitle}
-                    caption={hasCaption}
-                    chatId={chat_id}
-                    messageId={id}
-                    voiceNote={content.voice_note}
-                    openMedia={openMedia}
-                    meta={inlineMeta}
-                />
+                <>
+                    <VoiceNote
+                        type='message'
+                        title={hasTitle}
+                        caption={hasCaption}
+                        chatId={chat_id}
+                        messageId={id}
+                        voiceNote={content.voice_note}
+                        openMedia={openMedia}
+                        meta={inlineMeta}
+                    />
+                    <SpeechRecognition chatId={chat_id} messageId={id} />
+                </>
             );
         default:
             return [`[${content['@type']}]`, inlineMeta];

@@ -68,3 +68,49 @@
 .message-bubble-out .poll-total-count {
     color: var(--message-out-subtle-color);
 }
+
+.poll-question-description {
+    margin-top: 2px;
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+.poll-add-option {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0 2px;
+}
+
+.poll-add-option-input {
+    flex: 1 1 140px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+    font-size: 14px;
+    color: inherit;
+    background: transparent;
+}
+
+.poll-link-button {
+    padding: 2px 0;
+    border: none;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--color-accent-main);
+    background: transparent;
+}
+
+.poll-retract {
+    display: block;
+    margin: 4px auto 0;
+}
+
+.poll-note {
+    margin-top: 4px;
+    font-size: 13px;
+    opacity: 0.7;
+}

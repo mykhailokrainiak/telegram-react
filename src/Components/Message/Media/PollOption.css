@@ -93,3 +93,8 @@
 .message-bubble-out .poll-option-progress-bar-incorrect {
     background-color: var(--error);
 }
+
+.poll-option-author {
+    font-size: 12px;
+    opacity: 0.6;
+}

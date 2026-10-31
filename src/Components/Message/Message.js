@@ -22,7 +22,9 @@ import ChatTile from '../Tile/ChatTile';
 import EmptyTile from '../Tile/EmptyTile';
 import UnreadSeparator from './UnreadSeparator';
 import WebPage from './Media/WebPage';
-import { startMessageEditing, stopMessageEditing } from '../../Actions/Message';
+import Reactions from './Reactions';
+import MessageTranslation from './MessageTranslation';
+import { loadMessageProperties, startMessageEditing, stopMessageEditing } from '../../Actions/Message';
 import {
     getEmojiMatches,
     getText,
@@ -46,6 +48,26 @@ import {
 } from '../../Actions/Client';
 import MessageStore from '../../Stores/MessageStore';
 import './Message.css';
+
+// The text selected inside this message, with its offset in the message text, for a quoted reply.
+function getSelectedQuote(message, element) {
+    const selection = window.getSelection();
+    if (!message || !selection || selection.isCollapsed || !element) return null;
+    if (!element.contains(selection.anchorNode) || !element.contains(selection.focusNode)) return null;
+
+    const selected = selection.toString().trim();
+    if (!selected) return null;
+
+    const { content } = message;
+    const formattedText = content && (content.text || content.caption);
+    const fullText = formattedText && formattedText.text;
+    if (!fullText) return null;
+
+    const position = fullText.indexOf(selected);
+    if (position < 0) return null;
+
+    return { text: selected, position };
+}
 
 class Message extends Component {
     constructor(props) {
@@ -342,8 +364,13 @@ class Message extends Component {
             const copyLink =
                 event.target && event.target.tagName === 'A' && event.target.href ? event.target.href : null;
 
+            const { chatId, messageId } = this.props;
+            const quote = getSelectedQuote(MessageStore.get(chatId, messageId), event.currentTarget);
+            await loadMessageProperties(chatId, [messageId]);
+
             this.setState({
                 contextMenu: true,
+                quote,
                 copyLink,
                 left,
                 top
@@ -369,6 +396,7 @@ class Message extends Component {
             shook,
             copyLink,
             contextMenu,
+            quote,
             left,
             top
         } = this.state;
@@ -378,7 +406,7 @@ class Message extends Component {
         const message = MessageStore.get(chatId, messageId);
         if (!message) return <div>[empty message]</div>;
 
-        const { content, is_outgoing, date, reply_to_message_id, forward_info, sender_id, reply_markup } = message;
+        const { content, is_outgoing, date, reply_to_message_id, reply_in_chat_id, reply_to, forward_info, sender_id, reply_markup } = message;
 
         const isOutgoing = is_outgoing && !isChannelChat(chatId);
         const inlineMeta = (
@@ -517,8 +545,9 @@ class Message extends Component {
                                     )}
                                     {showReply && (
                                         <Reply
-                                            chatId={chatId}
+                                            chatId={reply_in_chat_id || chatId}
                                             messageId={reply_to_message_id}
+                                            quote={reply_to && reply_to.quote}
                                             onClick={this.handleReplyClick}
                                         />
                                     )}
@@ -531,6 +560,7 @@ class Message extends Component {
                                         })}>
                                         {text}
                                     </div>
+                                    <MessageTranslation chatId={chatId} messageId={messageId} />
                                     {webPage && (
                                         <WebPage
                                             chatId={chatId}
@@ -539,6 +569,7 @@ class Message extends Component {
                                             meta={inlineMeta}
                                         />
                                     )}
+                                    <Reactions chatId={chatId} messageId={messageId} />
                                     {showMeta && meta}
                                 </div>
                                 {reply_markup && (
@@ -561,6 +592,7 @@ class Message extends Component {
                     open={contextMenu}
                     onClose={this.handleCloseContextMenu}
                     copyLink={copyLink}
+                    quote={quote}
                     source={source}
                 />
             </div>

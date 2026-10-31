@@ -19,6 +19,7 @@ import { getText, getWebPage, isEmptySelection, openMedia } from '../../../Utils
 import { selectMessage } from '../../../Actions/Client';
 import MessageStore from '../../../Stores/MessageStore';
 import './AlbumItem.css';
+import { loadMessageProperties } from '../../../Actions/Message';
 
 class AlbumItem extends React.Component {
 
@@ -188,6 +189,9 @@ class AlbumItem extends React.Component {
             const top = event.clientY;
             const copyLink =
                 event.target && event.target.tagName === 'A' && event.target.href ? event.target.href : null;
+
+            const { chatId, messageId } = this.props;
+            await loadMessageProperties(chatId, [messageId]);
 
             this.setState({
                 contextMenu: true,

@@ -24,6 +24,10 @@ serviceMap.set('messageExpiredPhoto', true);
 serviceMap.set('messageSticker', false);
 serviceMap.set('messageVideo', false);
 serviceMap.set('messageExpiredVideo', true);
+serviceMap.set('messageExpiredVideoNote', true);
+serviceMap.set('messageExpiredVoiceNote', true);
+serviceMap.set('messageChecklistTasksDone', true);
+serviceMap.set('messageChecklistTasksAdded', true);
 serviceMap.set('messageVideoNote', false);
 serviceMap.set('messageVoiceNote', false);
 serviceMap.set('messageLocation', false);
@@ -198,6 +202,12 @@ export function getServiceMessageContent(message, openUser = false) {
         }
         case 'messageExpiredVideo': {
             return LStore.getString('AttachVideoExpired');
+        }
+        case 'messageExpiredVideoNote': {
+            return 'Video message expired';
+        }
+        case 'messageExpiredVoiceNote': {
+            return 'Voice message expired';
         }
         case 'messageBasicGroupChatCreate': {
             if (isOutgoing) {
@@ -408,6 +418,32 @@ export function getServiceMessageContent(message, openUser = false) {
             }
 
             return LStore.replace(LStore.getString('ActionPinnedNoText'), 'un1', author);
+        }
+        case 'messageChecklistTasksDone': {
+            const done = content.marked_as_done_task_ids.length;
+            const undone = content.marked_as_not_done_task_ids.length;
+            const action =
+                done && !undone
+                    ? `marked ${done} ${done === 1 ? 'task' : 'tasks'} as done`
+                    : undone && !done
+                    ? `marked ${undone} ${undone === 1 ? 'task' : 'tasks'} as not done`
+                    : 'updated the checklist';
+
+            if (isOutgoing) {
+                return `You ${action}`;
+            }
+
+            return [<MessageAuthor key='un1' sender={sender_id} openUser={openUser} />, ` ${action}`];
+        }
+        case 'messageChecklistTasksAdded': {
+            const count = content.tasks.length;
+            const action = `added ${count} ${count === 1 ? 'task' : 'tasks'} to the checklist`;
+
+            if (isOutgoing) {
+                return `You ${action}`;
+            }
+
+            return [<MessageAuthor key='un1' sender={sender_id} openUser={openUser} />, ` ${action}`];
         }
         case 'messageScreenshotTaken': {
             if (isOutgoing) {

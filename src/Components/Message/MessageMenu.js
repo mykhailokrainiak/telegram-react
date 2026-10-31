@@ -22,6 +22,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Popover from '@material-ui/core/Popover';
+import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
+import TranslateIcon from '@material-ui/icons/Translate';
 import CloseIcon from '../../Assets/Icons/Close';
 import CopyIcon from '../../Assets/Icons/Copy';
 import DeleteIcon from '../../Assets/Icons/Delete';
@@ -44,6 +46,9 @@ import { NOTIFICATION_AUTO_HIDE_DURATION_MS } from '../../Constants';
 import AppStore from '../../Stores/ApplicationStore';
 import FileStore from '../../Stores/FileStore';
 import MessageStore from '../../Stores/MessageStore';
+import ReactionPicker from './ReactionPicker';
+import { canReactToMessage } from '../../Utils/Reactions';
+import { getMessageTranslation, hideMessageTranslation, translateMessage } from '../../Actions/Message';
 import TdLibController from '../../Controllers/TdLibController';
 import './MessageMenu.css';
 
@@ -156,6 +161,25 @@ class MessageMenu extends React.PureComponent {
         replyMessage(chatId, messageId);
     };
 
+    handleReplyWithQuote = event => {
+        const { chatId, messageId, quote, onClose } = this.props;
+
+        clearSelection();
+        onClose(event);
+        replyMessage(chatId, messageId, quote);
+    };
+
+    handleTranslate = event => {
+        const { chatId, messageId, onClose } = this.props;
+
+        onClose(event);
+        if (getMessageTranslation(chatId, messageId)) {
+            hideMessageTranslation(chatId, messageId);
+        } else {
+            translateMessage(chatId, messageId);
+        }
+    };
+
     handlePin = event => {
         const { chatId, messageId, onClose } = this.props;
 
@@ -225,23 +249,31 @@ class MessageMenu extends React.PureComponent {
     };
 
     render() {
-        const { t, chatId, messageId, anchorPosition, copyLink, open, onClose, source } = this.props;
+        const { t, chatId, messageId, anchorPosition, copyLink, quote, open, onClose, source } = this.props;
         const { confirmStopPoll } = this.state;
         if (!confirmStopPoll && !open) return null;
 
         const isPinned = isMessagePinned(chatId, messageId);
         const canBeUnvoted = canMessageBeUnvoted(chatId, messageId) && source === 'chat';
         const canBeClosed = canMessageBeClosed(chatId, messageId) && source === 'chat';
-        const canBeReplied = canSendMessages(chatId) && source === 'chat';
-        const canBePinned = canPinMessages(chatId) && !isServiceMessage(MessageStore.get(chatId, messageId));
+        const message = MessageStore.get(chatId, messageId);
+        const canBeReplied = canSendMessages(chatId) && source === 'chat' && (!message || message.can_be_replied !== false);
+        const canBePinned =
+            canPinMessages(chatId) && !isServiceMessage(message) && (!message || message.can_be_pinned !== false);
         const canBeForwarded = canMessageBeForwarded(chatId, messageId);
         const canBeDeleted = canMessageBeDeleted(chatId, messageId);
         const canBeEdited = canMessageBeEdited(chatId, messageId) && !AppStore.recording && source === 'chat';
         const canBeSelected = !MessageStore.hasSelectedMessage(chatId, messageId) && !isServiceMessage(MessageStore.get(chatId, messageId));
         const canCopyLink = Boolean(copyLink);
         const canCopyPublicMessageLink = isPublicSupergroup(chatId);
+        const canReact = canReactToMessage(message) && source === 'chat';
+        const messageText = message && message.content && (message.content.text || message.content.caption);
+        const canTranslate = Boolean(messageText && messageText.text) && source === 'chat';
+        const isTranslated = canTranslate && Boolean(getMessageTranslation(chatId, messageId));
 
         const hasItems =
+            canReact ||
+            canTranslate ||
             canBeUnvoted || canBeClosed || canBeReplied || canBePinned || canBeForwarded || canBeDeleted || canBeEdited || canBeSelected || canCopyLink || canCopyPublicMessageLink;
         if (!hasItems) {
             return null;
@@ -263,6 +295,7 @@ class MessageMenu extends React.PureComponent {
                         horizontal: 'left'
                     }}
                     onMouseDown={e => e.stopPropagation()}>
+                    {canReact && <ReactionPicker chatId={chatId} messageId={messageId} onSelect={onClose} />}
                     <MenuList onClick={e => e.stopPropagation()}>
                         {/*<MenuItem onClick={this.handleDownload}>*/}
                         {/*    <ListItemIcon>*/}
@@ -300,6 +333,22 @@ class MessageMenu extends React.PureComponent {
                                     <ShareIcon style={{transform: 'scaleX(-1)'}}/>
                                 </ListItemIcon>
                                 <ListItemText primary={t('Reply')} />
+                            </MenuItem>
+                        )}
+                        {canBeReplied && quote && (
+                            <MenuItem onClick={this.handleReplyWithQuote}>
+                                <ListItemIcon>
+                                    <FormatQuoteIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={t('ReplyWithQuote', 'Reply with quote')} />
+                            </MenuItem>
+                        )}
+                        {canTranslate && (
+                            <MenuItem onClick={this.handleTranslate}>
+                                <ListItemIcon>
+                                    <TranslateIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={isTranslated ? t('HideTranslation', 'Hide translation') : t('TranslateMessage', 'Translate')} />
                             </MenuItem>
                         )}
                         {canBePinned && (
@@ -393,7 +442,8 @@ MessageMenu.propTypes = {
     anchorPosition: PropTypes.object,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    copyLink: PropTypes.string
+    copyLink: PropTypes.string,
+    quote: PropTypes.object
 };
 
 const enhance = compose(

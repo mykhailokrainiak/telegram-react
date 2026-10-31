@@ -1,0 +1,66 @@
+.view-once {
+    position: relative;
+    width: 240px;
+    height: 180px;
+    max-width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: var(--color-grey);
+    background-size: cover;
+    background-position: center;
+}
+
+.view-once::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(16px);
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.view-once-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 16px;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.view-once-icon {
+    font-size: 16px;
+}
+
+.view-once-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+}
+
+.view-once-viewer img,
+.view-once-viewer video {
+    max-width: 90vw;
+    max-height: 82vh;
+    object-fit: contain;
+}
+
+.view-once-viewer-hint {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}

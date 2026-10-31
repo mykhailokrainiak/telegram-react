@@ -65,6 +65,7 @@ class InputBox extends Component {
         this.state = {
             chatId,
             replyToMessageId: getChatDraftReplyToMessageId(chatId),
+            replyQuote: null,
             editMessageId: 0,
             recordingReady: true,
             recordingTime: null,
@@ -82,6 +83,7 @@ class InputBox extends Component {
             newDraft,
             files,
             replyToMessageId,
+            replyQuote,
             editMessageId,
             openEditMedia,
             openEditUrl,
@@ -109,6 +111,10 @@ class InputBox extends Component {
         }
 
         if (nextState.replyToMessageId !== replyToMessageId) {
+            return true;
+        }
+
+        if (nextState.replyQuote !== replyQuote) {
             return true;
         }
 
@@ -447,7 +453,7 @@ class InputBox extends Component {
             return;
         }
 
-        this.setState({ replyToMessageId: messageId });
+        this.setState({ replyToMessageId: messageId, replyQuote: messageId ? update.quote || null : null });
 
         if (messageId && !recordingTime) {
             this.setInputFocus();
@@ -464,6 +470,7 @@ class InputBox extends Component {
             {
                 chatId: update.nextChatId,
                 replyToMessageId: getChatDraftReplyToMessageId(update.nextChatId),
+                replyQuote: null,
                 editMessageId: 0,
                 openEditUrl: false
             },
@@ -490,7 +497,8 @@ class InputBox extends Component {
         if (formattedText) {
             this.setFormattedText(formattedText);
             this.setState({
-                replyToMessageId: getChatDraftReplyToMessageId(chatId)
+                replyToMessageId: getChatDraftReplyToMessageId(chatId),
+                replyQuote: null
             });
         } else {
             element.innerText = null;
@@ -1234,7 +1242,7 @@ class InputBox extends Component {
     }
 
     sendMessage = async (content, clearDraft, callback) => {
-        const { chatId, replyToMessageId } = this.state;
+        const { chatId, replyToMessageId, replyQuote } = this.state;
 
         if (!chatId) return;
         if (!content) return;
@@ -1244,11 +1252,23 @@ class InputBox extends Component {
             const result = await TdLibController.send({
                 '@type': 'sendMessage',
                 chat_id: chatId,
-                reply_to_message_id: replyToMessageId,
+                reply_to: replyToMessageId
+                    ? {
+                          '@type': 'inputMessageReplyToMessage',
+                          message_id: replyToMessageId,
+                          quote: replyQuote
+                              ? {
+                                    '@type': 'inputTextQuote',
+                                    text: { '@type': 'formattedText', text: replyQuote.text, entities: [] },
+                                    position: replyQuote.position
+                                }
+                              : null
+                      }
+                    : null,
                 input_message_content: content
             });
 
-            this.setState({ replyToMessageId: 0 }, () => {
+            this.setState({ replyToMessageId: 0, replyQuote: null }, () => {
                 if (clearDraft) {
                     this.saveDraft();
                 }
@@ -1854,6 +1874,7 @@ class InputBox extends Component {
             editMessageId,
             newItem,
             replyToMessageId,
+            replyQuote,
             files,
             newDraft,
             defaultText,
@@ -1879,6 +1900,7 @@ class InputBox extends Component {
                         <InputBoxHeader
                             chatId={chatId}
                             messageId={replyToMessageId}
+                            quote={replyQuote}
                             editMessageId={openEditMedia ? 0 : editMessageId}
                             onClick={this.handleHeaderClick}
                         />

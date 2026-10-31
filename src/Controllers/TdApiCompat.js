@@ -134,8 +134,13 @@ function convertOut(obj) {
                 };
             } else {
                 obj.allows_multiple_answers = Boolean(type.allow_multiple_answers);
-                obj.type = { '@type': 'inputPollTypeRegular' };
+                obj.type = { '@type': 'inputPollTypeRegular', allow_adding_options: Boolean(obj.allow_adding_options) };
             }
+            // Polls used to allow changing a vote by default; TDLib now needs it requested.
+            if (obj.allows_revoting === undefined) {
+                obj.allows_revoting = type['@type'] !== 'pollTypeQuiz';
+            }
+            delete obj.allow_adding_options;
             break;
         }
         case 'toggleMessageSenderIsBlocked': {
@@ -487,6 +492,20 @@ function convertIn(obj) {
         }
         case 'pollOption': {
             obj.text = plainText(obj.text);
+            break;
+        }
+        case 'chatPermissions': {
+            // TDLib split can_send_messages / can_send_media_messages into per-type permissions.
+            obj.can_send_messages = Boolean(obj.can_send_basic_messages);
+            obj.can_send_media_messages = Boolean(
+                obj.can_send_audios ||
+                    obj.can_send_documents ||
+                    obj.can_send_photos ||
+                    obj.can_send_videos ||
+                    obj.can_send_video_notes ||
+                    obj.can_send_voice_notes
+            );
+            obj.can_add_web_page_previews = Boolean(obj.can_add_link_previews);
             break;
         }
         case 'chatMemberStatusAdministrator': {

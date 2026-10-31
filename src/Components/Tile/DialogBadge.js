@@ -17,6 +17,7 @@ import {
 import ChatStore from '../../Stores/ChatStore';
 import NotificationStore from '../../Stores/NotificationStore';
 import './DialogBadge.css';
+import '../Message/Reactions.css';
 
 class DialogBadge extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
@@ -45,6 +46,8 @@ class DialogBadge extends React.Component {
         ChatStore.on('updateChatReadOutbox', this.onUpdate);
         ChatStore.on('updateChatUnreadMentionCount', this.onUpdate);
         ChatStore.on('updateMessageMentionRead', this.onUpdate);
+        ChatStore.on('updateChatUnreadReactionCount', this.onUpdate);
+        ChatStore.on('updateMessageUnreadReactions', this.onUpdate);
         NotificationStore.on('updateScopeNotificationSettings', this.onUpdateScopeNotificationSettings);
     }
 
@@ -60,6 +63,8 @@ class DialogBadge extends React.Component {
         ChatStore.off('updateChatReadOutbox', this.onUpdate);
         ChatStore.off('updateChatUnreadMentionCount', this.onUpdate);
         ChatStore.off('updateMessageMentionRead', this.onUpdate);
+        ChatStore.off('updateChatUnreadReactionCount', this.onUpdate);
+        ChatStore.off('updateMessageUnreadReactions', this.onUpdate);
         NotificationStore.off('updateScopeNotificationSettings', this.onUpdateScopeNotificationSettings);
     }
 
@@ -123,6 +128,11 @@ class DialogBadge extends React.Component {
 
         return (
             <>
+                {chat.unread_reaction_count > 0 && (
+                    <div className='dialog-badge dialog-badge-reaction' title='Unread reactions'>
+                        <div className='dialog-badge-mention'>♥</div>
+                    </div>
+                )}
                 {showUnreadMentionCount && (
                     <div className='dialog-badge'>
                         <div className='dialog-badge-mention'>@</div>
@@ -133,7 +143,7 @@ class DialogBadge extends React.Component {
                         <span className='dialog-badge-text'>{unread_count > 0 ? unread_count : ''}</span>
                     </div>
                 )}
-                {isPinned && !showUnreadCount && !showUnreadMentionCount && (
+                {isPinned && !showUnreadCount && !showUnreadMentionCount && !(chat.unread_reaction_count > 0) && (
                     <div className='dialog-badge-pinned'>
                         <PinIcon className='dialog-badge-pinned-icon' />
                     </div>

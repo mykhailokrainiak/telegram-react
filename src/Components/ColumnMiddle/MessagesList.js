@@ -19,6 +19,7 @@ import Message from '../Message/Message';
 import ServiceMessage from '../Message/ServiceMessage';
 import Placeholder from './Placeholder';
 import ScrollDownButton from './ScrollDownButton';
+import UnreadReactionsButton from './UnreadReactionsButton';
 import StickersHint from './StickersHint';
 import { throttle, getPhotoSize, itemsInView, historyEquals, getScrollMessage, mapEquals } from '../../Utils/Common';
 import { loadChatsContent, loadDraftContent, loadMessageContents } from '../../Utils/File';
@@ -1735,6 +1736,7 @@ class MessagesList extends React.Component {
                 {scrollDownVisible && (
                     <ScrollDownButton ref={this.scrollDownButtonRef} onClick={this.handleScrollDownClick} />
                 )}
+                <UnreadReactionsButton chatId={chatId} />
                 <FilesDropTarget />
                 <StickersHint />
                 {/*<InputBoxHints />*/}
