@@ -519,6 +519,15 @@ function convertIn(obj) {
             obj.is_blocked = Boolean(obj.block_list);
             break;
         }
+        case 'updateChatAction': {
+            // The UI still listens for the pre-1.7 updateUserChatAction, keyed by user id.
+            const sender = obj.sender_id || {};
+            const topic = obj.topic_id;
+            obj['@type'] = 'updateUserChatAction';
+            obj.user_id = sender['@type'] === 'messageSenderUser' ? sender.user_id : sender.chat_id;
+            obj.message_thread_id = topic && topic['@type'] === 'messageTopicThread' ? topic.message_thread_id : 0;
+            break;
+        }
         case 'updateMessageSendFailed': {
             const error = obj.error || {};
             obj.error_code = error.code;
