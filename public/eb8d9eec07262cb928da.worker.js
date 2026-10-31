@@ -1,10 +1,3 @@
-/*
- *  Copyright (c) 2018-present, Evgeny Nadymov
- *
- * This source code is licensed under the GPL v.3.0 license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	this["webpackChunktdweb"] = function webpackChunkCallback(chunkIds, moreModules) {
 /******/ 		for(var moduleId in moreModules) {
@@ -54,7 +47,7 @@
 /******/ 		promises.push(Promise.resolve().then(function() {
 /******/ 			// "1" is the signal for "already loaded"
 /******/ 			if(!installedChunks[chunkId]) {
-/******/ 				importScripts(__webpack_require__.p + "" + chunkId + "." + "d6e29502cb97a72c1880" + ".worker.js");
+/******/ 				importScripts(__webpack_require__.p + "" + chunkId + "." + "eb8d9eec07262cb928da" + ".worker.js");
 /******/ 			}
 /******/ 		}));
 /******/ 		return Promise.all(promises);
@@ -114,14 +107,14 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(9);
+module.exports = __webpack_require__(7);
 
 
 /***/ }),
@@ -3030,42 +3023,10 @@ module.exports = _typeof;
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "d4f672689d35963706041f5b8ac88641.wasm";
+module.exports = __webpack_require__.p + "c2a4371552d8d8d69064ebda61491ba7.wasm";
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "d6520caaedecf6d82ffa1bde2f43bebb.mem";
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -3797,7 +3758,33 @@ try {
 
 
 /***/ }),
-/* 10 */
+/* 8 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3831,22 +3818,16 @@ var localforage_default = /*#__PURE__*/__webpack_require__.n(localforage);
 // CONCATENATED MODULE: ./src/logger.js
 
 
-
-var logger_Logger =
-/*#__PURE__*/
-function () {
+var logger_Logger = /*#__PURE__*/function () {
   function Logger() {
     classCallCheck_default()(this, Logger);
-
     this.setVerbosity('WARNING');
   }
-
   createClass_default()(Logger, [{
     key: "debug",
     value: function debug() {
       if (this.checkVerbosity(4)) {
         var _console;
-
         (_console = console).log.apply(_console, arguments);
       }
     }
@@ -3855,7 +3836,6 @@ function () {
     value: function log() {
       if (this.checkVerbosity(4)) {
         var _console2;
-
         (_console2 = console).log.apply(_console2, arguments);
       }
     }
@@ -3864,7 +3844,6 @@ function () {
     value: function info() {
       if (this.checkVerbosity(3)) {
         var _console3;
-
         (_console3 = console).info.apply(_console3, arguments);
       }
     }
@@ -3873,7 +3852,6 @@ function () {
     value: function warn() {
       if (this.checkVerbosity(2)) {
         var _console4;
-
         (_console4 = console).warn.apply(_console4, arguments);
       }
     }
@@ -3882,7 +3860,6 @@ function () {
     value: function error() {
       if (this.checkVerbosity(1)) {
         var _console5;
-
         (_console5 = console).error.apply(_console5, arguments);
       }
     }
@@ -3890,11 +3867,9 @@ function () {
     key: "setVerbosity",
     value: function setVerbosity(level) {
       var default_level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'info';
-
       if (level === undefined) {
         level = default_level;
       }
-
       if (typeof level === 'string') {
         level = {
           ERROR: 1,
@@ -3904,7 +3879,6 @@ function () {
           DEBUG: 4
         }[level.toUpperCase()] || 2;
       }
-
       this.level = level;
     }
   }, {
@@ -3913,26 +3887,23 @@ function () {
       return this.level >= level;
     }
   }]);
-
   return Logger;
 }();
-
 var log = new logger_Logger();
 /* harmony default export */ var logger = (log);
 // CONCATENATED MODULE: ./src/wasm-utils.js
 
 
 // 1. +++ fetchAndInstantiate() +++ //
+
 // This library function fetches the wasm module at 'url', instantiates it with
 // the given 'importObject', and returns the instantiated object instance
+
 function instantiateStreaming(_x, _x2) {
   return _instantiateStreaming.apply(this, arguments);
 }
-
 function _instantiateStreaming() {
-  _instantiateStreaming = asyncToGenerator_default()(
-  /*#__PURE__*/
-  regenerator_default.a.mark(function _callee(url, importObject) {
+  _instantiateStreaming = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee(url, importObject) {
     var result;
     return regenerator_default.a.wrap(function _callee$(_context) {
       while (1) {
@@ -3940,11 +3911,9 @@ function _instantiateStreaming() {
           case 0:
             _context.next = 2;
             return WebAssembly.instantiateStreaming(fetch(url), importObject);
-
           case 2:
             result = _context.sent;
             return _context.abrupt("return", result.instance);
-
           case 4:
           case "end":
             return _context.stop();
@@ -3954,7 +3923,6 @@ function _instantiateStreaming() {
   }));
   return _instantiateStreaming.apply(this, arguments);
 }
-
 function fetchAndInstantiate(url, importObject) {
   return fetch(url).then(function (response) {
     return response.arrayBuffer();
@@ -3963,7 +3931,10 @@ function fetchAndInstantiate(url, importObject) {
   }).then(function (results) {
     return results.instance;
   });
-} // 2. +++ instantiateCachedURL() +++ //
+}
+
+// 2. +++ instantiateCachedURL() +++ //
+
 // This library function fetches the wasm Module at 'url', instantiates it with
 // the given 'importObject', and returns a Promise resolving to the finished
 // wasm Instance. Additionally, the function attempts to cache the compiled wasm
@@ -3971,76 +3942,69 @@ function fetchAndInstantiate(url, importObject) {
 // just the given URL) is versioned by dbVersion and any change in dbVersion on
 // any call to instantiateCachedURL() will conservatively clear out the entire
 // cache to avoid stale modules.
-
 function instantiateCachedURL(dbVersion, url, importObject) {
   var dbName = 'wasm-cache';
-  var storeName = 'wasm-cache'; // This helper function Promise-ifies the operation of opening an IndexedDB
-  // database and clearing out the cache when the version changes.
+  var storeName = 'wasm-cache';
 
+  // This helper function Promise-ifies the operation of opening an IndexedDB
+  // database and clearing out the cache when the version changes.
   function openDatabase() {
     return new Promise(function (resolve, reject) {
       var request = indexedDB.open(dbName, dbVersion);
       request.onerror = reject.bind(null, 'Error opening wasm cache database');
-
       request.onsuccess = function () {
         resolve(request.result);
       };
-
       request.onupgradeneeded = function (event) {
         var db = request.result;
-
         if (db.objectStoreNames.contains(storeName)) {
           console.log("Clearing out version ".concat(event.oldVersion, " wasm cache"));
           db.deleteObjectStore(storeName);
         }
-
         console.log("Creating version ".concat(event.newVersion, " wasm cache"));
         db.createObjectStore(storeName);
       };
     });
-  } // This helper function Promise-ifies the operation of looking up 'url' in the
+  }
+
+  // This helper function Promise-ifies the operation of looking up 'url' in the
   // given IDBDatabase.
-
-
   function lookupInDatabase(db) {
     return new Promise(function (resolve, reject) {
       var store = db.transaction([storeName]).objectStore(storeName);
       var request = store.get(url);
       request.onerror = reject.bind(null, "Error getting wasm module ".concat(url));
-
       request.onsuccess = function (event) {
         if (request.result) resolve(request.result);else reject("Module ".concat(url, " was not found in wasm cache"));
       };
     });
-  } // This helper function fires off an async operation to store the given wasm
+  }
+
+  // This helper function fires off an async operation to store the given wasm
   // Module in the given IDBDatabase.
-
-
   function storeInDatabase(db, module) {
     var store = db.transaction([storeName], 'readwrite').objectStore(storeName);
     var request = store.put(module, url);
-
     request.onerror = function (err) {
       console.log("Failed to store in wasm cache: ".concat(err));
     };
-
     request.onsuccess = function (err) {
       console.log("Successfully stored ".concat(url, " in wasm cache"));
     };
-  } // This helper function fetches 'url', compiles it into a Module,
+  }
+
+  // This helper function fetches 'url', compiles it into a Module,
   // instantiates the Module with the given import object.
-
-
   function fetchAndInstantiate() {
     return fetch(url).then(function (response) {
       return response.arrayBuffer();
     }).then(function (buffer) {
       return WebAssembly.instantiate(buffer, importObject);
     });
-  } // With all the Promise helper functions defined, we can now express the core
+  }
+
+  // With all the Promise helper functions defined, we can now express the core
   // logic of an IndexedDB cache lookup. We start by trying to open a database.
-
-
   return openDatabase().then(function (db) {
     // Now see if we already have a compiled Module with key 'url' in 'db':
     return lookupInDatabase(db).then(function (module) {
@@ -4057,7 +4021,6 @@ function instantiateCachedURL(dbVersion, url, importObject) {
         } catch (e) {
           console.log('Failed to store module into db');
         }
-
         return results.instance;
       });
     });
@@ -4074,11 +4037,8 @@ function instantiateCachedURL(dbVersion, url, importObject) {
 function instantiateAny(_x3, _x4, _x5) {
   return _instantiateAny.apply(this, arguments);
 }
-
 function _instantiateAny() {
-  _instantiateAny = asyncToGenerator_default()(
-  /*#__PURE__*/
-  regenerator_default.a.mark(function _callee2(version, url, importObject) {
+  _instantiateAny = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee2(version, url, importObject) {
     return regenerator_default.a.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -4087,31 +4047,24 @@ function _instantiateAny() {
             _context2.prev = 1;
             _context2.next = 4;
             return instantiateStreaming(url, importObject);
-
           case 4:
             return _context2.abrupt("return", _context2.sent);
-
           case 7:
             _context2.prev = 7;
             _context2.t0 = _context2["catch"](1);
             console.log("instantiateStreaming failed", _context2.t0);
-
           case 10:
             _context2.prev = 10;
             _context2.next = 13;
             return instantiateCachedURL(version, url, importObject);
-
           case 13:
             return _context2.abrupt("return", _context2.sent);
-
           case 16:
             _context2.prev = 16;
             _context2.t1 = _context2["catch"](10);
             console.log("instantiateCachedURL failed", _context2.t1);
-
           case 19:
             throw new Error("can't instantiate wasm");
-
           case 20:
           case "end":
             return _context2.stop();
@@ -4125,12 +4078,7 @@ function _instantiateAny() {
 var release_td_wasm = __webpack_require__(6);
 var td_wasm_default = /*#__PURE__*/__webpack_require__.n(release_td_wasm);
 
-// EXTERNAL MODULE: ./src/prebuilt/release/td_asmjs.js.mem
-var td_asmjs_js = __webpack_require__(7);
-var td_asmjs_js_default = /*#__PURE__*/__webpack_require__.n(td_asmjs_js);
-
 // CONCATENATED MODULE: ./node_modules/babel-loader/lib!./node_modules/eslint-loader!./src/worker.js
-
 
 
 
@@ -4142,15 +4090,11 @@ var td_asmjs_js_default = /*#__PURE__*/__webpack_require__.n(td_asmjs_js);
 
 var tdlibVersion = 6;
 var localForageDrivers = [localforage_default.a.INDEXEDDB, localforage_default.a.LOCALSTORAGE, 'memoryDriver'];
-
 function initLocalForage() {
   return _initLocalForage.apply(this, arguments);
 }
-
 function _initLocalForage() {
-  _initLocalForage = asyncToGenerator_default()(
-  /*#__PURE__*/
-  regenerator_default.a.mark(function _callee29() {
+  _initLocalForage = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee29() {
     var memoryDriver;
     return regenerator_default.a.wrap(function _callee29$(_context29) {
       while (1) {
@@ -4161,26 +4105,21 @@ function _initLocalForage() {
               _driver: 'memoryDriver',
               _initStorage: function _initStorage(options) {
                 var dbInfo = {};
-
                 if (options) {
                   for (var i in options) {
                     dbInfo[i] = options[i];
                   }
                 }
-
                 this._dbInfo = dbInfo;
                 this._map = new Map();
               },
               clear: function () {
-                var _clear = asyncToGenerator_default()(
-                /*#__PURE__*/
-                regenerator_default.a.mark(function _callee21() {
+                var _clear = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee21() {
                   return regenerator_default.a.wrap(function _callee21$(_context21) {
                     while (1) {
                       switch (_context21.prev = _context21.next) {
                         case 0:
                           this._map.clear();
-
                         case 1:
                         case "end":
                           return _context21.stop();
@@ -4188,17 +4127,13 @@ function _initLocalForage() {
                     }
                   }, _callee21, this);
                 }));
-
                 function clear() {
                   return _clear.apply(this, arguments);
                 }
-
                 return clear;
               }(),
               getItem: function () {
-                var _getItem = asyncToGenerator_default()(
-                /*#__PURE__*/
-                regenerator_default.a.mark(function _callee22(key) {
+                var _getItem = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee22(key) {
                   var value;
                   return regenerator_default.a.wrap(function _callee22$(_context22) {
                     while (1) {
@@ -4207,7 +4142,6 @@ function _initLocalForage() {
                           value = this._map.get(key);
                           console.log('getItem', this._map, key, value);
                           return _context22.abrupt("return", value);
-
                         case 3:
                         case "end":
                           return _context22.stop();
@@ -4215,23 +4149,18 @@ function _initLocalForage() {
                     }
                   }, _callee22, this);
                 }));
-
-                function getItem(_x34) {
+                function getItem(_x32) {
                   return _getItem.apply(this, arguments);
                 }
-
                 return getItem;
               }(),
               iterate: function () {
-                var _iterate = asyncToGenerator_default()(
-                /*#__PURE__*/
-                regenerator_default.a.mark(function _callee23(iteratorCallback) {
+                var _iterate = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee23(iteratorCallback) {
                   return regenerator_default.a.wrap(function _callee23$(_context23) {
                     while (1) {
                       switch (_context23.prev = _context23.next) {
                         case 0:
                           logger.error('iterate is not supported');
-
                         case 1:
                         case "end":
                           return _context23.stop();
@@ -4239,23 +4168,18 @@ function _initLocalForage() {
                     }
                   }, _callee23);
                 }));
-
-                function iterate(_x35) {
+                function iterate(_x33) {
                   return _iterate.apply(this, arguments);
                 }
-
                 return iterate;
               }(),
               key: function () {
-                var _key = asyncToGenerator_default()(
-                /*#__PURE__*/
-                regenerator_default.a.mark(function _callee24(n) {
+                var _key = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee24(n) {
                   return regenerator_default.a.wrap(function _callee24$(_context24) {
                     while (1) {
                       switch (_context24.prev = _context24.next) {
                         case 0:
                           logger.error('key n is not supported');
-
                         case 1:
                         case "end":
                           return _context24.stop();
@@ -4263,23 +4187,18 @@ function _initLocalForage() {
                     }
                   }, _callee24);
                 }));
-
-                function key(_x36) {
+                function key(_x34) {
                   return _key.apply(this, arguments);
                 }
-
                 return key;
               }(),
               keys: function () {
-                var _keys = asyncToGenerator_default()(
-                /*#__PURE__*/
-                regenerator_default.a.mark(function _callee25() {
+                var _keys = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee25() {
                   return regenerator_default.a.wrap(function _callee25$(_context25) {
                     while (1) {
                       switch (_context25.prev = _context25.next) {
                         case 0:
                           return _context25.abrupt("return", this._map.keys());
-
                         case 1:
                         case "end":
                           return _context25.stop();
@@ -4287,23 +4206,18 @@ function _initLocalForage() {
                     }
                   }, _callee25, this);
                 }));
-
                 function keys() {
                   return _keys.apply(this, arguments);
                 }
-
                 return keys;
               }(),
               length: function () {
-                var _length = asyncToGenerator_default()(
-                /*#__PURE__*/
-                regenerator_default.a.mark(function _callee26() {
+                var _length = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee26() {
                   return regenerator_default.a.wrap(function _callee26$(_context26) {
                     while (1) {
                       switch (_context26.prev = _context26.next) {
                         case 0:
                           return _context26.abrupt("return", this._map.size());
-
                         case 1:
                         case "end":
                           return _context26.stop();
@@ -4311,23 +4225,18 @@ function _initLocalForage() {
                     }
                   }, _callee26, this);
                 }));
-
                 function length() {
                   return _length.apply(this, arguments);
                 }
-
                 return length;
               }(),
               removeItem: function () {
-                var _removeItem = asyncToGenerator_default()(
-                /*#__PURE__*/
-                regenerator_default.a.mark(function _callee27(key) {
+                var _removeItem = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee27(key) {
                   return regenerator_default.a.wrap(function _callee27$(_context27) {
                     while (1) {
                       switch (_context27.prev = _context27.next) {
                         case 0:
                           this._map["delete"](key);
-
                         case 1:
                         case "end":
                           return _context27.stop();
@@ -4335,17 +4244,13 @@ function _initLocalForage() {
                     }
                   }, _callee27, this);
                 }));
-
-                function removeItem(_x37) {
+                function removeItem(_x35) {
                   return _removeItem.apply(this, arguments);
                 }
-
                 return removeItem;
               }(),
               setItem: function () {
-                var _setItem = asyncToGenerator_default()(
-                /*#__PURE__*/
-                regenerator_default.a.mark(function _callee28(key, value) {
+                var _setItem = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee28(key, value) {
                   var originalValue;
                   return regenerator_default.a.wrap(function _callee28$(_context28) {
                     while (1) {
@@ -4353,11 +4258,8 @@ function _initLocalForage() {
                         case 0:
                           originalValue = this._map.get(key);
                           console.log('setItem', this._map, key, value);
-
                           this._map.set(key, value);
-
                           return _context28.abrupt("return", originalValue);
-
                         case 4:
                         case "end":
                           return _context28.stop();
@@ -4365,17 +4267,13 @@ function _initLocalForage() {
                     }
                   }, _callee28, this);
                 }));
-
-                function setItem(_x38, _x39) {
+                function setItem(_x36, _x37) {
                   return _setItem.apply(this, arguments);
                 }
-
                 return setItem;
               }()
             }; // Add the driver to localForage.
-
             localforage_default.a.defineDriver(memoryDriver);
-
           case 2:
           case "end":
             return _context29.stop();
@@ -4385,63 +4283,56 @@ function _initLocalForage() {
   }));
   return _initLocalForage.apply(this, arguments);
 }
-
 function loadTdlibWasm(_x, _x2) {
   return _loadTdlibWasm.apply(this, arguments);
 }
-
 function _loadTdlibWasm() {
-  _loadTdlibWasm = asyncToGenerator_default()(
-  /*#__PURE__*/
-  regenerator_default.a.mark(function _callee30(onFS, wasmUrl) {
-    var td_module, createTdwebModule, td_wasm, module;
+  _loadTdlibWasm = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee30(onFS, wasmUrl) {
+    var td_module, createTdwebModule, td_wasm, moduleArg, module;
     return regenerator_default.a.wrap(function _callee30$(_context30) {
       while (1) {
         switch (_context30.prev = _context30.next) {
           case 0:
             console.log('loadTdlibWasm');
             _context30.next = 3;
-            return __webpack_require__.e(/* import() */ 1).then(__webpack_require__.t.bind(null, 20, 7));
-
+            return __webpack_require__.e(/* import() */ 1).then(__webpack_require__.t.bind(null, 11, 7));
           case 3:
             td_module = _context30.sent;
             createTdwebModule = td_module["default"];
-            logger.info('got td_wasm.js', td_module, createTdwebModule);
+            logger.info('receive td_wasm.js', td_module, createTdwebModule);
             td_wasm = td_wasm_default.a;
-
             if (wasmUrl) {
               td_wasm = wasmUrl;
             }
-
-            module = createTdwebModule({
+            moduleArg = {
               onRuntimeInitialized: function onRuntimeInitialized() {
-                logger.info('runtime intialized');
+                logger.info('runtime initialized');
+                var FS = moduleArg.FS;
+                FS.filesystems = FS.filesystems || {
+                  IDBFS: moduleArg.IDBFS,
+                  WORKERFS: moduleArg.WORKERFS
+                };
+                onFS(FS);
               },
               instantiateWasm: function instantiateWasm(imports, successCallback) {
                 logger.info('start instantiateWasm', td_wasm, imports);
-
                 var next = function next(instance) {
                   logger.info('finish instantiateWasm');
                   successCallback(instance);
                 };
-
                 instantiateAny(tdlibVersion, td_wasm, imports).then(next);
                 return {};
-              },
-              ENVIROMENT: 'WORKER'
-            });
-            onFS(module.FS); // hack
-
+              }
+            };
+            module = createTdwebModule(moduleArg);
             logger.info('Wait module');
             _context30.next = 13;
             return module;
-
           case 13:
             module = _context30.sent;
-            logger.info('Got module', module); //onFS(module.FS);
-
+            logger.info('Loaded module', module);
+            //onFS(module.FS);
             return _context30.abrupt("return", module);
-
           case 16:
           case "end":
             return _context30.stop();
@@ -4451,76 +4342,15 @@ function _loadTdlibWasm() {
   }));
   return _loadTdlibWasm.apply(this, arguments);
 }
-
-function loadTdlibAsmjs(_x3) {
-  return _loadTdlibAsmjs.apply(this, arguments);
+function loadTdlib(_x3, _x4) {
+  return _loadTdlib.apply(this, arguments);
 }
-
-function _loadTdlibAsmjs() {
-  _loadTdlibAsmjs = asyncToGenerator_default()(
-  /*#__PURE__*/
-  regenerator_default.a.mark(function _callee31(onFS) {
-    var createTdwebModule, fromFile, toFile, module;
+function _loadTdlib() {
+  _loadTdlib = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee31(onFS, wasmUrl) {
+    var wasmSupported;
     return regenerator_default.a.wrap(function _callee31$(_context31) {
       while (1) {
         switch (_context31.prev = _context31.next) {
-          case 0:
-            console.log('loadTdlibAsmjs');
-            _context31.next = 3;
-            return __webpack_require__.e(/* import() */ 2).then(__webpack_require__.t.bind(null, 21, 7));
-
-          case 3:
-            createTdwebModule = _context31.sent["default"];
-            console.log('got td_asm.js', createTdwebModule);
-            fromFile = 'td_asmjs.js.mem';
-            toFile = td_asmjs_js_default.a;
-            module = createTdwebModule({
-              onRuntimeInitialized: function onRuntimeInitialized() {
-                console.log('runtime intialized');
-              },
-              locateFile: function locateFile(name) {
-                if (name === fromFile) {
-                  return toFile;
-                }
-
-                return name;
-              },
-              ENVIROMENT: 'WORKER'
-            });
-            onFS(module.FS); // hack
-
-            logger.info('Wait module');
-            _context31.next = 12;
-            return module;
-
-          case 12:
-            module = _context31.sent;
-            logger.info('Got module', module); //onFS(module.FS);
-
-            return _context31.abrupt("return", module);
-
-          case 15:
-          case "end":
-            return _context31.stop();
-        }
-      }
-    }, _callee31);
-  }));
-  return _loadTdlibAsmjs.apply(this, arguments);
-}
-
-function loadTdlib(_x4, _x5, _x6) {
-  return _loadTdlib.apply(this, arguments);
-}
-
-function _loadTdlib() {
-  _loadTdlib = asyncToGenerator_default()(
-  /*#__PURE__*/
-  regenerator_default.a.mark(function _callee32(mode, onFS, wasmUrl) {
-    var wasmSupported;
-    return regenerator_default.a.wrap(function _callee32$(_context32) {
-      while (1) {
-        switch (_context32.prev = _context32.next) {
           case 0:
             wasmSupported = function () {
               try {
@@ -4529,61 +4359,37 @@ function _loadTdlib() {
                   if (module instanceof WebAssembly.Module) return new WebAssembly.Instance(module) instanceof WebAssembly.Instance;
                 }
               } catch (e) {}
-
               return false;
             }();
-
             if (!wasmSupported) {
-              if (mode === 'wasm') {
-                logger.error('WebAssembly is not supported, trying to use it anyway');
-              } else {
-                logger.warn('WebAssembly is not supported, trying to use asm.js');
-                mode = 'asmjs';
-              }
+              logger.error('WebAssembly is not supported, trying to use it anyway');
             }
-
-            if (!(mode === 'asmjs')) {
-              _context32.next = 4;
-              break;
-            }
-
-            return _context32.abrupt("return", loadTdlibAsmjs(onFS));
-
-          case 4:
-            return _context32.abrupt("return", loadTdlibWasm(onFS, wasmUrl));
-
-          case 5:
+            return _context31.abrupt("return", loadTdlibWasm(onFS, wasmUrl));
+          case 3:
           case "end":
-            return _context32.stop();
+            return _context31.stop();
         }
       }
-    }, _callee32);
+    }, _callee31);
   }));
   return _loadTdlib.apply(this, arguments);
 }
-
-var worker_OutboundFileSystem =
-/*#__PURE__*/
-function () {
+var worker_OutboundFileSystem = /*#__PURE__*/function () {
   function OutboundFileSystem(root, FS) {
     classCallCheck_default()(this, OutboundFileSystem);
-
     this.root = root;
     this.nextFileId = 0;
     this.FS = FS;
     this.files = new Set();
     FS.mkdir(root);
   }
-
   createClass_default()(OutboundFileSystem, [{
     key: "blobToPath",
     value: function blobToPath(blob, name) {
       var dir = this.root + '/' + this.nextFileId;
-
       if (!name) {
         name = 'blob';
       }
-
       this.nextFileId++;
       this.FS.mkdir(dir);
       this.FS.mount(this.FS.filesystems.WORKERFS, {
@@ -4605,56 +4411,44 @@ function () {
       }
     }
   }]);
-
   return OutboundFileSystem;
 }();
-
-var worker_InboundFileSystem =
-/*#__PURE__*/
-function () {
+var worker_InboundFileSystem = /*#__PURE__*/function () {
   function InboundFileSystem() {
     classCallCheck_default()(this, InboundFileSystem);
   }
-
   createClass_default()(InboundFileSystem, [{
     key: "load_pids",
     value: function () {
-      var _load_pids = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee() {
+      var _load_pids = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee() {
         var keys_start, idb, read, keys, keys_time;
         return regenerator_default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 keys_start = performance.now();
-                logger.debug('InboundFileSystem::create::keys start'); //const keys = await this.store.keys();
-
+                logger.debug('InboundFileSystem::create::keys start');
+                //const keys = await this.store.keys();
                 _context.next = 4;
                 return this.idb;
-
               case 4:
                 idb = _context.sent;
                 read = idb.transaction(['keyvaluepairs'], 'readonly').objectStore('keyvaluepairs');
                 _context.next = 8;
                 return new Promise(function (resolve, reject) {
                   var request = read.getAllKeys();
-
                   request.onsuccess = function () {
                     return resolve(request.result);
                   };
-
                   request.onerror = function () {
                     return reject(request.error);
                   };
                 });
-
               case 8:
                 keys = _context.sent;
                 keys_time = (performance.now() - keys_start) / 1000;
                 logger.debug('InboundFileSystem::create::keys ' + keys_time + ' ' + keys.length);
                 this.pids = new Set(keys);
-
               case 12:
               case "end":
                 return _context.stop();
@@ -4662,11 +4456,9 @@ function () {
           }
         }, _callee, this);
       }));
-
       function load_pids() {
         return _load_pids.apply(this, arguments);
       }
-
       return load_pids;
     }()
   }, {
@@ -4675,7 +4467,6 @@ function () {
       if (!this.pids) {
         return true;
       }
-
       return this.pids.has(pid);
     }
   }, {
@@ -4688,9 +4479,7 @@ function () {
   }, {
     key: "doPersist",
     value: function () {
-      var _doPersist = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee2(pid, path, arr, resolve, reject, write) {
+      var _doPersist = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee2(pid, path, arr, resolve, reject, write) {
         var size;
         return regenerator_default.a.wrap(function _callee2$(_context2) {
           while (1) {
@@ -4703,37 +4492,30 @@ function () {
                 _context2.next = 6;
                 return new Promise(function (resolve, reject) {
                   var request = write.put(new Blob([arr]), pid);
-
                   request.onsuccess = function () {
                     return resolve(request.result);
                   };
-
                   request.onerror = function () {
                     return reject(request.error);
                   };
                 });
-
               case 6:
                 if (this.pids) {
                   this.pids.add(pid);
                 }
-
                 this.FS.unlink(path);
                 _context2.next = 13;
                 break;
-
               case 10:
                 _context2.prev = 10;
                 _context2.t0 = _context2["catch"](3);
                 logger.error('Failed persist ' + path + ' ', _context2.t0);
-
               case 13:
                 //log.debug('persist.do finish', pid, path, arr.length);
                 this.persistCount--;
                 this.persistSize -= size;
                 resolve();
                 this.tryFinishPersist();
-
               case 17:
               case "end":
                 return _context2.stop();
@@ -4741,19 +4523,15 @@ function () {
           }
         }, _callee2, this, [[3, 10]]);
       }));
-
-      function doPersist(_x7, _x8, _x9, _x10, _x11, _x12) {
+      function doPersist(_x5, _x6, _x7, _x8, _x9, _x10) {
         return _doPersist.apply(this, arguments);
       }
-
       return doPersist;
     }()
   }, {
     key: "flushPersist",
     value: function () {
-      var _flushPersist = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee3() {
+      var _flushPersist = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee3() {
         var idb, write, q;
         return regenerator_default.a.wrap(function _callee3$(_context3) {
           while (1) {
@@ -4763,33 +4541,27 @@ function () {
                   _context3.next = 2;
                   break;
                 }
-
                 return _context3.abrupt("return");
-
               case 2:
                 logger.debug('persist.flush');
                 this.inPersist = true;
                 _context3.next = 6;
                 return this.idb;
-
               case 6:
                 idb = _context3.sent;
                 this.writeBegin = performance.now();
                 write = idb.transaction(['keyvaluepairs'], 'readwrite').objectStore('keyvaluepairs');
-
                 while (this.pendingI < this.pending.length && this.persistCount < 20 && this.persistSize < 50 << 20) {
                   q = this.pending[this.pendingI];
-                  this.pending[this.pendingI] = null; // TODO: add to transaction
-
+                  this.pending[this.pendingI] = null;
+                  // TODO: add to transaction
                   this.doPersist(q.pid, q.path, q.arr, q.resolve, q.reject, write);
                   this.pendingI++;
                   this.totalCount++;
                 }
-
                 logger.debug('persist.flush transaction cnt=' + this.persistCount + ', size=' + this.persistSize);
                 this.inPersist = false;
                 this.tryFinishPersist();
-
               case 13:
               case "end":
                 return _context3.stop();
@@ -4797,19 +4569,15 @@ function () {
           }
         }, _callee3, this);
       }));
-
       function flushPersist() {
         return _flushPersist.apply(this, arguments);
       }
-
       return flushPersist;
     }()
   }, {
     key: "tryFinishPersist",
     value: function () {
-      var _tryFinishPersist = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee4() {
+      var _tryFinishPersist = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee4() {
         return regenerator_default.a.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -4818,35 +4586,27 @@ function () {
                   _context4.next = 2;
                   break;
                 }
-
                 return _context4.abrupt("return");
-
               case 2:
                 if (!(this.persistCount !== 0)) {
                   _context4.next = 4;
                   break;
                 }
-
                 return _context4.abrupt("return");
-
               case 4:
                 logger.debug('persist.finish ' + (performance.now() - this.writeBegin) / 1000);
-
                 if (!(this.pendingI === this.pending.length)) {
                   _context4.next = 11;
                   break;
                 }
-
                 this.pending = [];
                 this.pendingHasTimeout = false;
                 this.pendingI = 0;
                 logger.debug('persist.finish done');
                 return _context4.abrupt("return");
-
               case 11:
                 logger.debug('persist.finish continue');
                 this.flushPersist();
-
               case 13:
               case "end":
                 return _context4.stop();
@@ -4854,21 +4614,16 @@ function () {
           }
         }, _callee4, this);
       }));
-
       function tryFinishPersist() {
         return _tryFinishPersist.apply(this, arguments);
       }
-
       return tryFinishPersist;
     }()
   }, {
     key: "persist",
     value: function () {
-      var _persist = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee5(pid, path, arr) {
+      var _persist = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee5(pid, path, arr) {
         var _this = this;
-
         return regenerator_default.a.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
@@ -4880,7 +4635,6 @@ function () {
                     _this.flushPersist();
                   }, 1);
                 }
-
                 _context5.next = 3;
                 return new Promise(function (resolve, reject) {
                   _this.pending.push({
@@ -4891,7 +4645,6 @@ function () {
                     reject: reject
                   });
                 });
-
               case 3:
               case "end":
                 return _context5.stop();
@@ -4899,19 +4652,15 @@ function () {
           }
         }, _callee5, this);
       }));
-
-      function persist(_x13, _x14, _x15) {
+      function persist(_x11, _x12, _x13) {
         return _persist.apply(this, arguments);
       }
-
       return persist;
     }()
   }, {
     key: "unlink",
     value: function () {
-      var _unlink = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee6(pid) {
+      var _unlink = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee6(pid) {
         var idb;
         return regenerator_default.a.wrap(function _callee6$(_context6) {
           while (1) {
@@ -4919,36 +4668,30 @@ function () {
               case 0:
                 logger.debug('Unlink ' + pid);
                 _context6.prev = 1;
-                this.forget(pid); //await this.store.removeItem(pid);
-
+                this.forget(pid);
+                //await this.store.removeItem(pid);
                 _context6.next = 5;
                 return this.idb;
-
               case 5:
                 idb = _context6.sent;
                 _context6.next = 8;
                 return new Promise(function (resolve, reject) {
                   var write = idb.transaction(['keyvaluepairs'], 'readwrite').objectStore('keyvaluepairs');
                   var request = write["delete"](pid);
-
                   request.onsuccess = function () {
                     return resolve(request.result);
                   };
-
                   request.onerror = function () {
                     return reject(request.error);
                   };
                 });
-
               case 8:
                 _context6.next = 13;
                 break;
-
               case 10:
                 _context6.prev = 10;
                 _context6.t0 = _context6["catch"](1);
                 logger.error('Failed unlink ' + pid + ' ', _context6.t0);
-
               case 13:
               case "end":
                 return _context6.stop();
@@ -4956,19 +4699,15 @@ function () {
           }
         }, _callee6, this, [[1, 10]]);
       }));
-
-      function unlink(_x16) {
+      function unlink(_x14) {
         return _unlink.apply(this, arguments);
       }
-
       return unlink;
     }()
   }], [{
     key: "create",
     value: function () {
-      var _create = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee7(dbName, root, FS_promise) {
+      var _create = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee7(dbName, root, FS_promise) {
         var start, ifs, FS, create_time;
         return regenerator_default.a.wrap(function _callee7$(_context7) {
           while (1) {
@@ -4984,23 +4723,21 @@ function () {
                 ifs.pendingI = 0;
                 ifs.inPersist = false;
                 ifs.totalCount = 0;
-                ifs.root = root; //ifs.store = localforage.createInstance({
+                ifs.root = root;
+
+                //ifs.store = localforage.createInstance({
                 //name: dbName,
                 //driver: localForageDrivers
                 //});
-
                 logger.debug('IDB name: ' + dbName);
                 ifs.idb = new Promise(function (resolve, reject) {
                   var request = indexedDB.open(dbName);
-
                   request.onsuccess = function () {
                     return resolve(request.result);
                   };
-
                   request.onerror = function () {
                     return reject(request.error);
                   };
-
                   request.onupgradeneeded = function () {
                     request.result.createObjectStore('keyvaluepairs');
                   };
@@ -5008,24 +4745,20 @@ function () {
                 ifs.load_pids();
                 _context7.next = 16;
                 return FS_promise;
-
               case 16:
                 FS = _context7.sent;
                 _context7.next = 19;
                 return ifs.idb;
-
               case 19:
                 ifs.FS = FS;
                 ifs.FS.mkdir(root);
                 create_time = (performance.now() - start) / 1000;
                 logger.debug('InboundFileSystem::create ' + create_time);
                 return _context7.abrupt("return", ifs);
-
               case 26:
                 _context7.prev = 26;
                 _context7.t0 = _context7["catch"](1);
                 logger.error('Failed to init Inbound FileSystem: ', _context7.t0);
-
               case 29:
               case "end":
                 return _context7.stop();
@@ -5033,33 +4766,23 @@ function () {
           }
         }, _callee7, null, [[1, 26]]);
       }));
-
-      function create(_x17, _x18, _x19) {
+      function create(_x15, _x16, _x17) {
         return _create.apply(this, arguments);
       }
-
       return create;
     }()
   }]);
-
   return InboundFileSystem;
 }();
-
-var worker_DbFileSystem =
-/*#__PURE__*/
-function () {
+var worker_DbFileSystem = /*#__PURE__*/function () {
   function DbFileSystem() {
     classCallCheck_default()(this, DbFileSystem);
   }
-
   createClass_default()(DbFileSystem, [{
     key: "sync",
     value: function () {
-      var _sync = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee8(force) {
+      var _sync = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee8(force) {
         var _this2 = this;
-
         var start;
         return regenerator_default.a.wrap(function _callee8$(_context8) {
           while (1) {
@@ -5069,18 +4792,14 @@ function () {
                   _context8.next = 2;
                   break;
                 }
-
                 return _context8.abrupt("return");
-
               case 2:
                 if (!(this.syncActive > 0 && !force)) {
                   _context8.next = 5;
                   break;
                 }
-
                 logger.debug('SYNC: skip');
                 return _context8.abrupt("return");
-
               case 5:
                 this.syncActive++;
                 start = performance.now();
@@ -5094,10 +4813,8 @@ function () {
                     resolve();
                   });
                 });
-
               case 9:
                 this.syncActive--;
-
               case 10:
               case "end":
                 return _context8.stop();
@@ -5105,19 +4822,15 @@ function () {
           }
         }, _callee8, this);
       }));
-
-      function sync(_x20) {
+      function sync(_x18) {
         return _sync.apply(this, arguments);
       }
-
       return sync;
     }()
   }, {
     key: "close",
     value: function () {
-      var _close = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee9() {
+      var _close = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee9() {
         return regenerator_default.a.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
@@ -5125,7 +4838,6 @@ function () {
                 clearInterval(this.syncfsInterval);
                 _context9.next = 3;
                 return this.sync(true);
-
               case 3:
               case "end":
                 return _context9.stop();
@@ -5133,33 +4845,26 @@ function () {
           }
         }, _callee9, this);
       }));
-
       function close() {
         return _close.apply(this, arguments);
       }
-
       return close;
     }()
   }, {
     key: "destroy",
     value: function () {
-      var _destroy = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee10() {
+      var _destroy = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee10() {
         var req;
         return regenerator_default.a.wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
                 clearInterval(this.syncfsInterval);
-
                 if (!this.readOnly) {
                   _context10.next = 3;
                   break;
                 }
-
                 return _context10.abrupt("return");
-
               case 3:
                 this.FS.unmount(this.root);
                 req = indexedDB.deleteDatabase(this.root);
@@ -5169,18 +4874,15 @@ function () {
                     logger.info('SUCCESS');
                     resolve(e.result);
                   };
-
                   req.onerror = function (e) {
                     logger.info('ONERROR');
                     reject(e.error);
                   };
-
                   req.onblocked = function (e) {
                     logger.info('ONBLOCKED');
                     reject('blocked');
                   };
                 });
-
               case 7:
               case "end":
                 return _context10.stop();
@@ -5188,32 +4890,28 @@ function () {
           }
         }, _callee10, this);
       }));
-
       function destroy() {
         return _destroy.apply(this, arguments);
       }
-
       return destroy;
     }()
   }], [{
     key: "create",
     value: function () {
-      var _create2 = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee11(root, FS_promise) {
+      var _create2 = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee11(root, FS_promise) {
         var readOnly,
-            start,
-            dbfs,
-            FS,
-            rmrf,
-            dirs,
-            root_dir,
-            key,
-            value,
-            i,
-            dir,
-            create_time,
-            _args11 = arguments;
+          start,
+          dbfs,
+          FS,
+          rmrf,
+          dirs,
+          root_dir,
+          key,
+          value,
+          i,
+          dir,
+          create_time,
+          _args11 = arguments;
         return regenerator_default.a.wrap(function _callee11$(_context11) {
           while (1) {
             switch (_context11.prev = _context11.next) {
@@ -5225,7 +4923,6 @@ function () {
                 dbfs.root = root;
                 _context11.next = 7;
                 return FS_promise;
-
               case 7:
                 FS = _context11.sent;
                 dbfs.FS = FS;
@@ -5240,25 +4937,20 @@ function () {
                     resolve();
                   });
                 });
-
               case 16:
                 rmrf = function rmrf(path) {
                   logger.debug('rmrf ', path);
                   var info;
-
                   try {
                     info = FS.lookupPath(path);
                   } catch (e) {
                     return;
                   }
-
                   logger.debug('rmrf ', path, info);
-
                   if (info.node.isFolder) {
                     for (var key in info.node.contents) {
                       rmrf(info.path + '/' + info.node.contents[key].name);
                     }
-
                     logger.debug('rmdir ', path);
                     FS.rmdir(path);
                   } else {
@@ -5266,53 +4958,43 @@ function () {
                     FS.unlink(path);
                   }
                 }; //const dirs = ['thumbnails', 'profile_photos', 'secret', 'stickers', 'temp', 'wallpapers', 'secret_thumbnails', 'passport'];
-
-
                 dirs = [];
                 root_dir = FS.lookupPath(root);
                 _context11.t0 = regenerator_default.a.keys(root_dir.node.contents);
-
               case 20:
                 if ((_context11.t1 = _context11.t0()).done) {
                   _context11.next = 29;
                   break;
                 }
-
                 key = _context11.t1.value;
                 value = root_dir.node.contents[key];
                 logger.debug('node ', key, value);
-
                 if (value.isFolder) {
                   _context11.next = 26;
                   break;
                 }
-
                 return _context11.abrupt("continue", 20);
-
               case 26:
                 dirs.push(root_dir.path + '/' + value.name);
                 _context11.next = 20;
                 break;
-
               case 29:
                 for (i in dirs) {
                   dir = dirs[i];
-                  rmrf(dir); //FS.mkdir(dir);
+                  rmrf(dir);
+                  //FS.mkdir(dir);
                   //FS.mount(FS.filesystems.MEMFS, {}, dir);
                 }
-
                 dbfs.syncfsInterval = setInterval(function () {
                   dbfs.sync();
                 }, 5000);
                 create_time = (performance.now() - start) / 1000;
                 logger.debug('DbFileSystem::create ' + create_time);
                 return _context11.abrupt("return", dbfs);
-
               case 36:
                 _context11.prev = 36;
                 _context11.t2 = _context11["catch"](2);
                 logger.error('Failed to init DbFileSystem: ', _context11.t2);
-
               case 39:
               case "end":
                 return _context11.stop();
@@ -5320,38 +5002,28 @@ function () {
           }
         }, _callee11, null, [[2, 36]]);
       }));
-
-      function create(_x21, _x22) {
+      function create(_x19, _x20) {
         return _create2.apply(this, arguments);
       }
-
       return create;
     }()
   }]);
-
   return DbFileSystem;
 }();
-
-var worker_TdFileSystem =
-/*#__PURE__*/
-function () {
+var worker_TdFileSystem = /*#__PURE__*/function () {
   function TdFileSystem() {
     classCallCheck_default()(this, TdFileSystem);
   }
-
   createClass_default()(TdFileSystem, [{
     key: "destroy",
     value: function () {
-      var _destroy2 = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee12() {
+      var _destroy2 = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee12() {
         return regenerator_default.a.wrap(function _callee12$(_context12) {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
                 _context12.next = 2;
                 return this.dbFileSystem.destroy();
-
               case 2:
               case "end":
                 return _context12.stop();
@@ -5359,19 +5031,15 @@ function () {
           }
         }, _callee12, this);
       }));
-
       function destroy() {
         return _destroy2.apply(this, arguments);
       }
-
       return destroy;
     }()
   }], [{
     key: "init_fs",
     value: function () {
-      var _init_fs = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee13(prefix, FS_promise) {
+      var _init_fs = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee13(prefix, FS_promise) {
         var FS;
         return regenerator_default.a.wrap(function _callee13$(_context13) {
           while (1) {
@@ -5379,12 +5047,10 @@ function () {
               case 0:
                 _context13.next = 2;
                 return FS_promise;
-
               case 2:
                 FS = _context13.sent;
                 FS.mkdir(prefix);
                 return _context13.abrupt("return", FS);
-
               case 5:
               case "end":
                 return _context13.stop();
@@ -5392,26 +5058,22 @@ function () {
           }
         }, _callee13);
       }));
-
-      function init_fs(_x23, _x24) {
+      function init_fs(_x21, _x22) {
         return _init_fs.apply(this, arguments);
       }
-
       return init_fs;
     }()
   }, {
     key: "create",
     value: function () {
-      var _create3 = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee14(instanceName, FS_promise) {
+      var _create3 = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee14(instanceName, FS_promise) {
         var readOnly,
-            tdfs,
-            prefix,
-            inboundFileSystem,
-            dbFileSystem,
-            FS,
-            _args14 = arguments;
+          tdfs,
+          prefix,
+          inboundFileSystem,
+          dbFileSystem,
+          FS,
+          _args14 = arguments;
         return regenerator_default.a.wrap(function _callee14$(_context14) {
           while (1) {
             switch (_context14.prev = _context14.next) {
@@ -5421,36 +5083,32 @@ function () {
                 tdfs = new TdFileSystem();
                 prefix = '/' + instanceName;
                 tdfs.prefix = prefix;
-                FS_promise = TdFileSystem.init_fs(prefix, FS_promise); //MEMFS. Store to IDB and delete files as soon as possible
+                FS_promise = TdFileSystem.init_fs(prefix, FS_promise);
 
+                //MEMFS. Store to IDB and delete files as soon as possible
                 inboundFileSystem = worker_InboundFileSystem.create(instanceName, prefix + '/inboundfs', FS_promise); //IDBFS. MEMFS which is flushed to IDB from time to time
-
                 dbFileSystem = worker_DbFileSystem.create(prefix + '/dbfs', FS_promise, readOnly);
                 _context14.next = 10;
                 return FS_promise;
-
               case 10:
                 FS = _context14.sent;
-                tdfs.FS = FS; //WORKERFS. Temporary stores Blobs for outbound files
+                tdfs.FS = FS;
 
+                //WORKERFS. Temporary stores Blobs for outbound files
                 tdfs.outboundFileSystem = new worker_OutboundFileSystem(prefix + '/outboundfs', tdfs.FS);
                 _context14.next = 15;
                 return inboundFileSystem;
-
               case 15:
                 tdfs.inboundFileSystem = _context14.sent;
                 _context14.next = 18;
                 return dbFileSystem;
-
               case 18:
                 tdfs.dbFileSystem = _context14.sent;
                 return _context14.abrupt("return", tdfs);
-
               case 22:
                 _context14.prev = 22;
                 _context14.t0 = _context14["catch"](1);
                 logger.error('Failed to init TdFileSystem: ', _context14.t0);
-
               case 25:
               case "end":
                 return _context14.stop();
@@ -5458,93 +5116,72 @@ function () {
           }
         }, _callee14, null, [[1, 22]]);
       }));
-
-      function create(_x25, _x26) {
+      function create(_x23, _x24) {
         return _create3.apply(this, arguments);
       }
-
       return create;
     }()
   }]);
-
   return TdFileSystem;
 }();
-
-var worker_TdClient =
-/*#__PURE__*/
-function () {
+var worker_TdClient = /*#__PURE__*/function () {
   function TdClient(callback) {
     classCallCheck_default()(this, TdClient);
-
     logger.info('Start worker');
     this.pendingQueries = [];
     this.isPending = true;
     this.callback = callback;
     this.wasInit = false;
   }
-
   createClass_default()(TdClient, [{
     key: "testLocalForage",
     value: function () {
-      var _testLocalForage = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee15() {
+      var _testLocalForage = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee15() {
         var DRIVERS, _i, _DRIVERS, driverName, x;
-
         return regenerator_default.a.wrap(function _callee15$(_context15) {
           while (1) {
             switch (_context15.prev = _context15.next) {
               case 0:
                 _context15.next = 2;
                 return initLocalForage();
-
               case 2:
                 DRIVERS = [localforage_default.a.INDEXEDDB, 'memoryDriver', localforage_default.a.LOCALSTORAGE, localforage_default.a.WEBSQL, localForageDrivers];
                 _i = 0, _DRIVERS = DRIVERS;
-
               case 4:
                 if (!(_i < _DRIVERS.length)) {
                   _context15.next = 29;
                   break;
                 }
-
                 driverName = _DRIVERS[_i];
                 console.log('Test ', driverName);
                 _context15.prev = 7;
                 _context15.next = 10;
                 return localforage_default.a.setDriver(driverName);
-
               case 10:
                 console.log('A');
                 _context15.next = 13;
                 return localforage_default.a.setItem('hello', 'world');
-
               case 13:
                 console.log('B');
                 _context15.next = 16;
                 return localforage_default.a.getItem('hello');
-
               case 16:
                 x = _context15.sent;
-                console.log('got ', x);
+                console.log('receive ', x);
                 _context15.next = 20;
                 return localforage_default.a.clear();
-
               case 20:
                 console.log('C');
                 _context15.next = 26;
                 break;
-
               case 23:
                 _context15.prev = 23;
                 _context15.t0 = _context15["catch"](7);
                 console.log('Error', _context15.t0);
-
               case 26:
                 _i++;
                 _context15.next = 4;
                 break;
-
               case 29:
               case "end":
                 return _context15.stop();
@@ -5552,22 +5189,17 @@ function () {
           }
         }, _callee15, null, [[7, 23]]);
       }));
-
       function testLocalForage() {
         return _testLocalForage.apply(this, arguments);
       }
-
       return testLocalForage;
     }()
   }, {
     key: "init",
     value: function () {
-      var _init = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee16(options) {
+      var _init = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee16(options) {
         var _this3 = this;
-
-        var mode, FS_promise, tdfs_promise;
+        var FS_promise, tdfs_promise;
         return regenerator_default.a.wrap(function _callee16$(_context16) {
           while (1) {
             switch (_context16.prev = _context16.next) {
@@ -5576,32 +5208,26 @@ function () {
                   _context16.next = 2;
                   break;
                 }
-
                 return _context16.abrupt("return");
-
               case 2:
                 //await this.testLocalForage();
                 logger.setVerbosity(options.jsLogVerbosityLevel);
                 this.wasInit = true;
                 options = options || {};
-                mode = options.mode || 'wasm';
                 FS_promise = new Promise(function (resolve) {
                   _this3.onFS = resolve;
                 });
                 tdfs_promise = worker_TdFileSystem.create(options.instanceName, FS_promise, options.readOnly);
                 this.useDatabase = true;
-
                 if ('useDatabase' in options) {
                   this.useDatabase = options.useDatabase;
                 }
-
                 logger.info('load TdModule');
-                _context16.next = 13;
-                return loadTdlib(mode, this.onFS, options.wasmUrl);
-
-              case 13:
+                _context16.next = 12;
+                return loadTdlib(this.onFS, options.wasmUrl);
+              case 12:
                 this.TdModule = _context16.sent;
-                logger.info('got TdModule');
+                logger.info('loaded TdModule');
                 this.td_functions = {
                   td_create: this.TdModule.cwrap('td_emscripten_create_client_id', 'number', []),
                   td_send: this.TdModule.cwrap('td_emscripten_send', null, ['number', 'string']),
@@ -5614,8 +5240,8 @@ function () {
                     }));
                   },
                   td_get_timeout: this.TdModule.cwrap('td_emscripten_get_timeout', 'number', [])
-                }; //this.onFS(this.TdModule.FS);
-
+                };
+                //this.onFS(this.TdModule.FS);
                 this.FS = this.TdModule.FS;
                 this.TdModule['websocket']['on']('error', function (error) {
                   _this3.scheduleReceiveSoon();
@@ -5634,43 +5260,39 @@ function () {
                 });
                 this.TdModule['websocket']['on']('close', function (fd) {
                   _this3.scheduleReceiveSoon();
-                }); // wait till it is allowed to start
+                });
 
+                // wait till it is allowed to start
                 this.callback({
                   '@type': 'inited'
                 });
-                _context16.next = 26;
+                _context16.next = 25;
                 return new Promise(function (resolve) {
                   _this3.onStart = resolve;
                 });
-
-              case 26:
+              case 25:
                 this.isStarted = true;
                 logger.info('may start now');
-
                 if (!this.isClosing) {
-                  _context16.next = 30;
+                  _context16.next = 29;
                   break;
                 }
-
                 return _context16.abrupt("return");
-
-              case 30:
+              case 29:
                 logger.info('FS start init');
-                _context16.next = 33;
+                _context16.next = 32;
                 return tdfs_promise;
-
-              case 33:
+              case 32:
                 this.tdfs = _context16.sent;
                 logger.info('FS inited');
                 this.callback({
                   '@type': 'fsInited'
-                }); // no async initialization after this point
+                });
 
+                // no async initialization after this point
                 if (options.logVerbosityLevel === undefined) {
                   options.logVerbosityLevel = 2;
                 }
-
                 this.td_functions.td_set_verbosity(options.logVerbosityLevel);
                 this.client_id = this.td_functions.td_create();
                 this.savingFiles = new Map();
@@ -5700,19 +5322,16 @@ function () {
                 });
                 this.flushPendingQueries();
                 this.receive();
-
-              case 45:
+              case 44:
               case "end":
                 return _context16.stop();
             }
           }
         }, _callee16, this);
       }));
-
-      function init(_x27) {
+      function init(_x25) {
         return _init.apply(this, arguments);
       }
-
       return init;
     }()
   }, {
@@ -5724,34 +5343,29 @@ function () {
           path: this.tdfs.outboundFileSystem.blobToPath(query.data, query.name)
         };
       }
-
       for (var key in query) {
         var field = query[key];
-
         if (field && typeof_default()(field) === 'object') {
           query[key] = this.prepareQueryRecursive(field);
         }
       }
-
       return query;
     }
   }, {
     key: "prepareQuery",
     value: function prepareQuery(query) {
       if (query['@type'] === 'setTdlibParameters') {
-        query.parameters.database_directory = this.tdfs.dbFileSystem.root;
-        query.parameters.files_directory = this.tdfs.inboundFileSystem.root;
+        query.database_directory = this.tdfs.dbFileSystem.root;
+        query.files_directory = this.tdfs.inboundFileSystem.root;
         var useDb = this.useDatabase;
-        query.parameters.use_file_database = useDb;
-        query.parameters.use_chat_info_database = useDb;
-        query.parameters.use_message_database = useDb;
-        query.parameters.use_secret_chats = useDb;
+        query.use_file_database = useDb;
+        query.use_chat_info_database = useDb;
+        query.use_message_database = useDb;
+        query.use_secret_chats = useDb;
       }
-
       if (query['@type'] === 'getLanguagePackString') {
         query.language_pack_database_path = this.tdfs.dbFileSystem.root + '/language';
       }
-
       return this.prepareQueryRecursive(query);
     }
   }, {
@@ -5772,7 +5386,6 @@ function () {
         });
         return;
       }
-
       this.callback({
         '@type': 'ok',
         '@extra': query['@extra']
@@ -5782,7 +5395,6 @@ function () {
     key: "readFilePart",
     value: function readFilePart(query) {
       var res;
-
       try {
         //const file_size = this.FS.stat(query.path).size;
         var stream = this.FS.open(query.path, 'r');
@@ -5799,7 +5411,6 @@ function () {
         });
         return;
       }
-
       this.callback({
         '@type': 'filePart',
         '@extra': query['@extra'],
@@ -5812,7 +5423,6 @@ function () {
       if (this.isClosing) {
         return;
       }
-
       if (this.wasFatalError) {
         if (query['@type'] === 'destroy') {
           this.destroy({
@@ -5820,46 +5430,37 @@ function () {
             '@extra': query['@extra']
           });
         }
-
         return;
       }
-
       if (query['@type'] === 'init') {
         this.init(query.options);
         return;
       }
-
       if (query['@type'] === 'start') {
         logger.info('on_start');
         this.onStart();
         return;
       }
-
       if (query['@type'] === 'setJsLogVerbosityLevel') {
         logger.setVerbosity(query.new_verbosity_level);
         return;
       }
-
       if (this.isPending) {
         this.pendingQueries.push(query);
         return;
       }
-
       if (query['@type'] === 'setLogVerbosityLevel' || query['@type'] === 'getLogVerbosityLevel' || query['@type'] === 'setLogTagVerbosityLevel' || query['@type'] === 'getLogTagVerbosityLevel' || query['@type'] === 'getLogTags') {
         this.execute(query);
         return;
       }
-
       if (query['@type'] === 'readFilePart') {
         this.readFilePart(query);
         return;
       }
-
       if (query['@type'] === 'deleteIdbKey') {
         this.deleteIdbKey(query);
         return;
       }
-
       query = this.prepareQuery(query);
       this.td_functions.td_send(this.client_id, JSON.stringify(query));
       this.scheduleReceiveSoon();
@@ -5879,29 +5480,22 @@ function () {
     key: "receive",
     value: function receive() {
       this.cancelReceive();
-
       if (this.wasFatalError) {
         return;
       }
-
       try {
         while (true) {
           var msg = this.td_functions.td_receive();
-
           if (!msg) {
             break;
           }
-
           var response = this.prepareResponse(JSON.parse(msg));
-
           if (response['@type'] === 'updateAuthorizationState' && response.authorization_state['@type'] === 'authorizationStateClosed') {
             this.close(response);
             break;
           }
-
           this.callback(response);
         }
-
         this.scheduleReceive();
       } catch (error) {
         this.onFatalError(error);
@@ -5914,7 +5508,6 @@ function () {
         clearTimeout(this.receiveTimeout);
         delete this.receiveTimeout;
       }
-
       delete this.receiveSoon;
     }
   }, {
@@ -5923,7 +5516,6 @@ function () {
       if (this.receiveSoon) {
         return;
       }
-
       this.cancelReceive();
       this.receiveSoon = true;
       this.scheduleReceiveIn(0.001);
@@ -5934,7 +5526,6 @@ function () {
       if (this.receiveSoon) {
         return;
       }
-
       this.cancelReceive();
       var timeout = this.td_functions.td_get_timeout();
       this.scheduleReceiveIn(timeout);
@@ -5943,7 +5534,6 @@ function () {
     key: "scheduleReceiveIn",
     value: function scheduleReceiveIn(timeout) {
       var _this4 = this;
-
       //return;
       logger.debug('Scheduler receive in ' + timeout + 's');
       this.receiveTimeout = setTimeout(function () {
@@ -5959,32 +5549,25 @@ function () {
   }, {
     key: "close",
     value: function () {
-      var _close2 = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee17(last_update) {
+      var _close2 = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee17(last_update) {
         return regenerator_default.a.wrap(function _callee17$(_context17) {
           while (1) {
             switch (_context17.prev = _context17.next) {
               case 0:
-                // close db and cancell all timers
+                // close db and cancel all timers
                 this.isClosing = true;
-
                 if (!this.isStarted) {
                   _context17.next = 7;
                   break;
                 }
-
                 logger.debug('close worker: start');
                 _context17.next = 5;
                 return this.tdfs.dbFileSystem.close();
-
               case 5:
                 this.cancelReceive();
                 logger.debug('close worker: finish');
-
               case 7:
                 this.callback(last_update);
-
               case 8:
               case "end":
                 return _context17.stop();
@@ -5992,19 +5575,15 @@ function () {
           }
         }, _callee17, this);
       }));
-
-      function close(_x28) {
+      function close(_x26) {
         return _close2.apply(this, arguments);
       }
-
       return close;
     }()
   }, {
     key: "destroy",
     value: function () {
-      var _destroy3 = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee18(result) {
+      var _destroy3 = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee18(result) {
         return regenerator_default.a.wrap(function _callee18$(_context18) {
           while (1) {
             switch (_context18.prev = _context18.next) {
@@ -6013,17 +5592,14 @@ function () {
                 logger.info('destroy tdfs ...');
                 _context18.next = 4;
                 return this.tdfs.destroy();
-
               case 4:
                 logger.info('destroy tdfs ok');
                 _context18.next = 10;
                 break;
-
               case 7:
                 _context18.prev = 7;
                 _context18.t0 = _context18["catch"](0);
                 logger.error('Failed destroy', _context18.t0);
-
               case 10:
                 this.callback(result);
                 this.callback({
@@ -6032,7 +5608,6 @@ function () {
                     '@type': 'authorizationStateClosed'
                   }
                 });
-
               case 12:
               case "end":
                 return _context18.stop();
@@ -6040,32 +5615,26 @@ function () {
           }
         }, _callee18, this, [[0, 7]]);
       }));
-
-      function destroy(_x29) {
+      function destroy(_x27) {
         return _destroy3.apply(this, arguments);
       }
-
       return destroy;
     }()
   }, {
     key: "asyncOnFatalError",
     value: function () {
-      var _asyncOnFatalError = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee19(error) {
+      var _asyncOnFatalError = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee19(error) {
         return regenerator_default.a.wrap(function _callee19$(_context19) {
           while (1) {
             switch (_context19.prev = _context19.next) {
               case 0:
                 _context19.next = 2;
                 return this.tdfs.dbFileSystem.sync();
-
               case 2:
                 this.callback({
                   '@type': 'updateFatalError',
                   error: error
                 });
-
               case 3:
               case "end":
                 return _context19.stop();
@@ -6073,11 +5642,9 @@ function () {
           }
         }, _callee19, this);
       }));
-
-      function asyncOnFatalError(_x30) {
+      function asyncOnFatalError(_x28) {
         return _asyncOnFatalError.apply(this, arguments);
       }
-
       return asyncOnFatalError;
     }()
   }, {
@@ -6085,14 +5652,11 @@ function () {
     value: function saveFile(pid, file) {
       var isSaving = this.savingFiles.has(pid);
       this.savingFiles.set(pid, file);
-
       if (isSaving) {
         return file;
       }
-
       try {
         var arr = this.FS.readFile(file.local.path);
-
         if (arr) {
           file = Object.assign({}, file);
           file.arr = arr;
@@ -6101,22 +5665,18 @@ function () {
       } catch (e) {
         logger.error('Failed to readFile: ', e);
       }
-
       return file;
     }
   }, {
     key: "doSaveFile",
     value: function () {
-      var _doSaveFile = asyncToGenerator_default()(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee20(pid, file, arr) {
+      var _doSaveFile = asyncToGenerator_default()(/*#__PURE__*/regenerator_default.a.mark(function _callee20(pid, file, arr) {
         return regenerator_default.a.wrap(function _callee20$(_context20) {
           while (1) {
             switch (_context20.prev = _context20.next) {
               case 0:
                 _context20.next = 2;
                 return this.tdfs.inboundFileSystem.persist(pid, file.local.path, arr);
-
               case 2:
                 file = this.savingFiles.get(pid);
                 file.idb_key = pid;
@@ -6125,7 +5685,6 @@ function () {
                   file: file
                 });
                 this.savingFiles["delete"](pid);
-
               case 6:
               case "end":
                 return _context20.stop();
@@ -6133,33 +5692,27 @@ function () {
           }
         }, _callee20, this);
       }));
-
-      function doSaveFile(_x31, _x32, _x33) {
+      function doSaveFile(_x29, _x30, _x31) {
         return _doSaveFile.apply(this, arguments);
       }
-
       return doSaveFile;
     }()
   }, {
     key: "prepareFile",
     value: function prepareFile(file) {
       var pid = file.remote.unique_id ? file.remote.unique_id : file.remote.id;
-
       if (!pid) {
         return file;
       }
-
       if (file.local.is_downloading_active) {
         this.tdfs.inboundFileSystem.forget(pid);
       } else if (this.tdfs.inboundFileSystem.has(pid)) {
         file.idb_key = pid;
         return file;
       }
-
       if (file.local.is_downloading_completed) {
         file = this.saveFile(pid, file);
       }
-
       return file;
     }
   }, {
@@ -6168,15 +5721,12 @@ function () {
       if (response['@type'] === 'file') {
         return this.prepareFile(response);
       }
-
       for (var key in response) {
         var field = response[key];
-
         if (field && typeof_default()(field) === 'object') {
           response[key] = this.prepareResponse(field);
         }
       }
-
       return response;
     }
   }, {
@@ -6186,7 +5736,6 @@ function () {
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
-
       try {
         for (var _iterator = this.pendingQueries[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var query = _step.value;
@@ -6208,15 +5757,12 @@ function () {
       }
     }
   }]);
-
   return TdClient;
 }();
-
 var client = new worker_TdClient(function (e) {
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   return postMessage(e, t);
 });
-
 onmessage = function onmessage(e) {
   try {
     client.send(e.data);

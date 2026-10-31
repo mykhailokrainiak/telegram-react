@@ -1,0 +1,19 @@
+{
+  "name": "tdweb",
+  "version": "1.8.69",
+  "description": "JavaScript interface for TDLib (Telegram library) (built locally from tdlib/td with Emscripten 6.0.13; see vendor/README.md)",
+  "main": "dist/tdweb.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tdlib/td.git",
+    "directory": "example/web/tdweb"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "telegram"
+  ],
+  "author": "Arseny Smirnov",
+  "license": "MIT"
+}

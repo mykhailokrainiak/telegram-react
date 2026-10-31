@@ -18,6 +18,7 @@ import {
     WASM_FILE_NAME
 } from '../Constants';
 import TdClient from 'tdweb/dist/tdweb';
+import { fromTd, toTd } from './TdApiCompat';
 // import TdClient from '@arseny30/tdweb/dist/tdweb';
 // import TdClient from '../../public/tdweb';
 
@@ -80,6 +81,7 @@ class TdLibController extends EventEmitter {
 
             this.client = new TdClient(options);
             this.client.onUpdate = update => {
+                update = fromTd(update);
                 if (!this.disableLog) {
                     if (update['@type'] === 'updateFile') {
                         console.log('receive updateFile file_id=' + update.file.id, update);
@@ -173,11 +175,17 @@ class TdLibController extends EventEmitter {
             return Promise.reject('tdweb client is not ready yet');
         }
 
+        if (request['@type'] === 'checkDatabaseEncryptionKey') {
+            // Removed from TDLib; the database key is now passed in setTdlibParameters.
+            return Promise.resolve({ '@type': 'ok' });
+        }
+
         if (!this.disableLog) {
             console.log('send', request);
 
             return this.client
-                .send(request)
+                .send(toTd(request))
+                .then(fromTd)
                 .then(result => {
                     console.log('send result', result);
                     return result;
@@ -188,7 +196,7 @@ class TdLibController extends EventEmitter {
                     throw error;
                 });
         } else {
-            return this.client.send(request);
+            return this.client.send(toTd(request)).then(fromTd);
         }
     };
 
@@ -214,26 +222,20 @@ class TdLibController extends EventEmitter {
 
         this.send({
             '@type': 'setTdlibParameters',
-            parameters: {
-                '@type': 'tdParameters',
-                use_test_dc: useTestDC,
-                api_id: apiId,
-                api_hash: apiHash,
-                system_language_code: navigator.language || 'en',
-                device_model: getBrowser(),
-                system_version: getOSName(),
-                application_version: version,
-                use_secret_chats: false,
-                use_message_database: true,
-                use_file_database: false,
-                database_directory: '/db',
-                files_directory: '/'
-            }
-            // ,
-            // extra: {
-            //     a: ['a', 'b'],
-            //     b: 123
-            // }
+            use_test_dc: useTestDC,
+            api_id: Number(apiId),
+            api_hash: apiHash,
+            system_language_code: navigator.language || 'en',
+            device_model: getBrowser(),
+            system_version: getOSName(),
+            application_version: version,
+            use_secret_chats: false,
+            use_message_database: true,
+            use_chat_info_database: true,
+            use_file_database: false,
+            database_directory: '/db',
+            files_directory: '/',
+            database_encryption_key: ''
         });
 
         this.send({
