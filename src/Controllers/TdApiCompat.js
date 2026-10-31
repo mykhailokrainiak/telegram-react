@@ -169,6 +169,11 @@ function convertOut(obj) {
             delete obj.is_masks;
             break;
         }
+        case 'getWebPageInstantView': {
+            obj.only_local = false;
+            delete obj.force_full;
+            break;
+        }
         case 'getMessageLink': {
             obj.in_message_thread = Boolean(obj.for_comment);
             delete obj.for_comment;
@@ -194,6 +199,147 @@ function convertOut(obj) {
             break;
         }
     }
+}
+
+// The old webPage.type strings the UI checks, by linkPreviewType.
+const LINK_PREVIEW_TYPE_NAMES = {
+    linkPreviewTypePhoto: 'photo',
+    linkPreviewTypeVideo: 'video',
+    linkPreviewTypeEmbeddedVideoPlayer: 'video',
+    linkPreviewTypeExternalVideo: 'video',
+    linkPreviewTypeAnimation: 'gif',
+    linkPreviewTypeEmbeddedAnimationPlayer: 'gif',
+    linkPreviewTypeAudio: 'audio',
+    linkPreviewTypeEmbeddedAudioPlayer: 'audio',
+    linkPreviewTypeExternalAudio: 'audio',
+    linkPreviewTypeDocument: 'document',
+    linkPreviewTypeSticker: 'telegram_sticker',
+    linkPreviewTypeVoiceNote: 'voice',
+    linkPreviewTypeVideoNote: 'video',
+    linkPreviewTypeMessage: 'telegram_message',
+    linkPreviewTypeChannelBoost: 'telegram_channel',
+    linkPreviewTypeSupergroupBoost: 'telegram_megagroup',
+    linkPreviewTypeVideoChat: 'telegram_voicechat',
+    linkPreviewTypeBackground: 'telegram_background',
+    linkPreviewTypeTheme: 'telegram_theme',
+    linkPreviewTypeStory: 'telegram_story',
+    linkPreviewTypeApp: 'app'
+};
+
+const INVITE_LINK_CHAT_TYPE_NAMES = {
+    inviteLinkChatTypeBasicGroup: 'telegram_chat',
+    inviteLinkChatTypeSupergroup: 'telegram_megagroup',
+    inviteLinkChatTypeChannel: 'telegram_channel'
+};
+
+// chatPhoto has the same minithumbnail and sizes as photo, which is what the UI renders.
+function chatPhotoToPhoto(chatPhoto) {
+    if (!chatPhoto) return null;
+    return { '@type': 'photo', has_stickers: false, minithumbnail: chatPhoto.minithumbnail, sizes: chatPhoto.sizes || [] };
+}
+
+function linkPreviewToWebPage(preview) {
+    if (!preview) return null;
+
+    const type = preview.type || {};
+    const webPage = {
+        '@type': 'webPage',
+        url: preview.url,
+        display_url: preview.display_url,
+        type: LINK_PREVIEW_TYPE_NAMES[type['@type']] || 'article',
+        site_name: preview.site_name,
+        title: preview.title,
+        description: preview.description,
+        photo: null,
+        embed_url: '',
+        embed_type: '',
+        embed_width: 0,
+        embed_height: 0,
+        duration: type.duration || 0,
+        author: preview.author,
+        animation: type.animation || null,
+        audio: type.audio || null,
+        document: type.document || null,
+        sticker: type.sticker || null,
+        video: type.video || null,
+        video_note: type.video_note || null,
+        voice_note: type.voice_note || null,
+        instant_view_version: preview.instant_view_version || 0
+    };
+
+    switch (type['@type']) {
+        case 'linkPreviewTypeArticle':
+        case 'linkPreviewTypeApp':
+        case 'linkPreviewTypeWebApp':
+        case 'linkPreviewTypePhoto':
+            webPage.photo = type.photo || null;
+            break;
+        case 'linkPreviewTypeVideo':
+            webPage.photo = type.cover || null;
+            break;
+        case 'linkPreviewTypeEmbeddedVideoPlayer':
+        case 'linkPreviewTypeEmbeddedAnimationPlayer':
+        case 'linkPreviewTypeEmbeddedAudioPlayer':
+            webPage.photo = type.thumbnail || null;
+            webPage.embed_url = type.url;
+            webPage.embed_type = 'iframe';
+            webPage.embed_width = type.width;
+            webPage.embed_height = type.height;
+            break;
+        case 'linkPreviewTypeChat':
+            webPage.type = INVITE_LINK_CHAT_TYPE_NAMES[type.type && type.type['@type']] || 'telegram_chat';
+            webPage.photo = chatPhotoToPhoto(type.photo);
+            break;
+        case 'linkPreviewTypeUser':
+            webPage.type = type.is_bot ? 'telegram_bot' : 'telegram_user';
+            webPage.photo = chatPhotoToPhoto(type.photo);
+            break;
+        case 'linkPreviewTypeChannelBoost':
+        case 'linkPreviewTypeSupergroupBoost':
+        case 'linkPreviewTypeVideoChat':
+        case 'linkPreviewTypeDirectMessagesChat':
+            webPage.photo = chatPhotoToPhoto(type.photo);
+            break;
+        default:
+            break;
+    }
+
+    return webPage;
+}
+
+// TDLib now omits empty captions and credits; the Instant View UI reads them unconditionally.
+const CAPTIONED_PAGE_BLOCKS = new Set([
+    'pageBlockAnimation',
+    'pageBlockAudio',
+    'pageBlockDocument',
+    'pageBlockPhoto',
+    'pageBlockVideo',
+    'pageBlockVoiceNote',
+    'pageBlockEmbedded',
+    'pageBlockEmbeddedPost',
+    'pageBlockCollage',
+    'pageBlockSlideshow',
+    'pageBlockMap'
+]);
+
+function emptyRichText() {
+    return { '@type': 'richTextPlain', text: '' };
+}
+
+function emptyCaption() {
+    return { '@type': 'pageBlockCaption', text: emptyRichText(), credit: emptyRichText() };
+}
+
+// The old UI renders a block quote's text; TDLib now gives it a list of blocks.
+function blocksToRichText(blocks) {
+    const texts = [];
+    (blocks || []).forEach(block => {
+        const text = block.text || block.header || block.title;
+        if (!text) return;
+        if (texts.length) texts.push({ '@type': 'richTextPlain', text: '\n' });
+        texts.push(text);
+    });
+    return { '@type': 'richTexts', texts };
 }
 
 function convertOrigin(origin) {
@@ -280,6 +426,38 @@ function convertIn(obj) {
             obj.input_message_text = obj.content;
             break;
         }
+        case 'messageText': {
+            obj.web_page = linkPreviewToWebPage(obj.link_preview);
+            break;
+        }
+        case 'webPageInstantView':
+        case 'pageBlockCollage':
+        case 'pageBlockDetails':
+        case 'pageBlockEmbeddedPost':
+        case 'pageBlockSlideshow':
+        case 'pageBlockListItem': {
+            obj.page_blocks = obj.blocks || [];
+            break;
+        }
+        case 'pageBlockBlockQuote': {
+            obj.text = blocksToRichText(obj.blocks);
+            obj.credit = obj.credit || emptyRichText();
+            break;
+        }
+        case 'pageBlockPullQuote': {
+            obj.credit = obj.credit || emptyRichText();
+            break;
+        }
+        case 'pageBlockCaption': {
+            obj.text = obj.text || emptyRichText();
+            obj.credit = obj.credit || emptyRichText();
+            break;
+        }
+        case 'richTextReference': {
+            obj.anchor_name = obj.name;
+            obj.url = '';
+            break;
+        }
         case 'messageChatSetMessageAutoDeleteTime': {
             obj['@type'] = 'messageChatSetTtl';
             obj.ttl = obj.message_auto_delete_time;
@@ -361,6 +539,10 @@ function convertIn(obj) {
         }
         default:
             break;
+    }
+
+    if (CAPTIONED_PAGE_BLOCKS.has(obj['@type']) && !obj.caption) {
+        obj.caption = emptyCaption();
     }
 }
 

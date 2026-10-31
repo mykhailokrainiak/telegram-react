@@ -505,6 +505,11 @@ export function getRichText(richText) {
         }
     }
 
+    // Types without a dedicated renderer (anchor links, mentions, spoilers, ...) still carry their text.
+    if (richText.text && typeof richText.text === 'object') {
+        return getRichText(richText.text);
+    }
+
     return `[${richText['@type']}]`;
 }
 
